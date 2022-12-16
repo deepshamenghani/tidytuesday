@@ -112,7 +112,8 @@ state_data_imputed %>%
          yaxis = list(zerolinecolor = '#ffff',
                       zerolinewidth = 2,
                       gridcolor = 'ffff',
-                      title = 'Change YoY'),
+                      title = 'Change YoY',
+                      range=list(-150, 500)),
          plot_bgcolor='#e5ecf6', width = 750, height = 450)
 
 
@@ -141,7 +142,8 @@ sector_data %>%
          yaxis = list(zerolinecolor = '#ffff',
                       zerolinewidth = 2,
                       gridcolor = 'ffff',
-                      title = 'Change YoY'),
+                      title = 'Change YoY',
+                      range=list(-150, 500)),
          plot_bgcolor='#e5ecf6', width = 750) %>%
   highlight(selectize = TRUE, persistent = TRUE) # This adds the selectize option to easily input sector
 
