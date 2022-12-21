@@ -1,0 +1,4 @@
+- source: index.qmd
+  quarto-pub:
+    - id: f89eb1e2-b936-4e73-9be0-ecd98e2e4d97
+      url: 'https://quartopub.com/sites/deepshamenghani/tidytuesday-weather-calling-shiny-in-quarto'
