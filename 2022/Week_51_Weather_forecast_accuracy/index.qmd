@@ -1,0 +1,250 @@
+---
+title: "TidyTuesday: Weather Forecast Accuracy analysis"
+date: today 
+author:
+  - name: Deepsha Menghani 
+    url: https://github.com/deepshamenghani
+title-block-banner: true
+format:
+  html:
+    theme: flatly
+    code-fold: false
+    code-tools: true
+    toc: false
+    number-sections: true
+link-citations: yes
+server: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  eval = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+In this post, I will analyse the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/tree/master/) dataset about Weather Forecast Accuracy in the US across all States.
+
+The data includes 16 months of forecasts and observations from 167 cities, as well as a separate data.frame of information about those cities and some other American cities. You can find the dataset on Tidy Tuesday [here](https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-12-20).
+
+::: callout-tip
+You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy).
+:::
+
+## Load libraries
+
+```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}
+
+# For loading Tidy Tuesday data
+library(tidytuesdayR)
+
+# EDA
+library(tidyverse)
+library(DT)
+library(usmap)
+library(plotly)
+
+# Shiny in md
+library(rmarkdown)
+library(shiny)
+
+```
+
+## Load data
+
+```{r}
+weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv')
+cities <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv')
+outlook_meanings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv')
+
+```
+
+::: panel-tabset
+### Weather Forcasts
+
+```{r echo=TRUE}
+head(weather_forecasts)
+```
+
+### Cities
+
+```{r}
+head(cities)
+```
+
+### Outlook meanings
+
+```{r}
+head(outlook_meanings)
+
+```
+:::
+
+## Incorporating Shiny in Quarto markdown
+
+__Start with adding the shiny server to the yaml component of the markdown and install the _'rmarkdown'_ package. Below is what the looks like.__
+
+```{code echo=TRUE}
+---
+title: 'TidyTuesday: Weather Forecast Accuracy analysis'
+date: today 
+author:
+  - name: Deepsha Menghani 
+    url: https://github.com/deepshamenghani
+title-block-banner: true
+format:
+  html:
+    theme: flatly
+    code-fold: true
+    code-tools: true
+    toc: false
+    number-sections: true
+link-citations: yes
+server: shiny
+---
+```
+
+__Add any input components to your shiny app before adding interactivity. Below is what the UI component looks like with an input command and a call to plot the output which will be created within the server. __
+
+```{code echo=TRUE}
+selectizeInput(
+    inputId = "input_weather",
+    label = h4("Cities with most number of days of"),
+    choices = unique(outlook_meanings$meaning),
+    selected = "Rain",
+    multiple = FALSE,
+    options = list(maxItems = 1)
+)
+
+plotlyOutput(outputId = "weatherplot")
+```
+
+__The above call to plot the output is generated within the server code chunk that begins with '#| context: server'. Below is what that looks like.__
+
+```{code echo=TRUE}
+#| context: server
+library(tidyverse)
+library(rmarkdown)
+library(plotly)
+library(shiny)
+library(usmap)
+
+weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv')
+cities <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv')
+outlook_meanings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv')
+
+weather_counts <- eventReactive(
+  eventExpr = input$input_weather,
+  valueExpr = {
+      weather_forecasts %>% 
+      filter(forecast_hours_before == 12) %>%
+      left_join(outlook_meanings) %>% 
+      filter(meaning == input$input_weather) %>%
+      count(state, city, forecast_outlook) %>% 
+      mutate(label = paste0(city,"\n",state, "\n",n)) %>% 
+      group_by(state) %>% 
+      arrange(desc(n)) %>% 
+      filter(row_number() == 1) %>%  
+      ungroup() %>%  
+      left_join(cities %>% select(city,state, lat, lon)) %>%
+      mutate(Region = case_when(state %in% (usmap::.northeast_region) ~ "Northeast",
+                                state %in% (usmap::.north_central_region) ~ "NorthCentral",
+                                state %in% (usmap::.midwest_region) ~ "Midwest",
+                                state %in% (usmap::.south_region) ~ "South",
+                                state %in% (usmap::.west_region) ~ "West",
+                                TRUE ~ "Other")) %>% 
+      filter(Region == "West") %>%
+      filter(!is.na(lat)) %>% 
+      usmap_transform() 
+  },
+  ignoreNULL = FALSE
+)
+
+output$weatherplot <- renderPlotly({
+    g <- plot_usmap(fill = "#008080", include = .west_region, alpha = 0.2, color = "#2c3e50" ) +
+      geom_point(data = weather_counts(),
+             aes(x = x, y = y, text=label),
+             color = "darkblue", alpha = 0.5) +
+      geom_text(data = weather_counts(),
+                            aes(x = x, y = y, label = city),
+                            size = 4, alpha = 0.8) +
+  labs(title = paste0("City with most number of days with ", input$input_weather))
+    ggplotly(g, tooltip = "text") %>% style(textposition = "top right") %>% layout(height = 600, width = 700)
+})
+```
+
+## Shiny output from the above code
+
+
+```{r}
+selectizeInput(
+    inputId = "input_weather",
+    label = h4("Cities with most number of days of"),
+    choices = unique(outlook_meanings$meaning),
+    selected = "Rain",
+    multiple = FALSE,
+    options = list(maxItems = 1)
+)
+
+plotlyOutput(outputId = "weatherplot")
+
+```
+
+```{r}
+#| context: server
+library(tidyverse)
+library(rmarkdown)
+library(plotly)
+library(shiny)
+library(usmap)
+
+weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv')
+cities <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv')
+outlook_meanings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv')
+
+weather_counts <- eventReactive(
+  eventExpr = input$input_weather,
+  valueExpr = {
+      weather_forecasts %>% 
+      filter(forecast_hours_before == 12) %>%
+      left_join(outlook_meanings) %>% 
+      filter(meaning == input$input_weather) %>%
+      count(state, city, forecast_outlook) %>% 
+      mutate(label = paste0(city,"\n",state, "\n",n)) %>% 
+      group_by(state) %>% 
+      arrange(desc(n)) %>% 
+      filter(row_number() == 1) %>%  
+      ungroup() %>%  
+      left_join(cities %>% select(city,state, lat, lon)) %>%
+      mutate(Region = case_when(state %in% (usmap::.northeast_region) ~ "Northeast",
+                                state %in% (usmap::.north_central_region) ~ "NorthCentral",
+                                state %in% (usmap::.midwest_region) ~ "Midwest",
+                                state %in% (usmap::.south_region) ~ "South",
+                                state %in% (usmap::.west_region) ~ "West",
+                                TRUE ~ "Other")) %>% 
+      filter(Region == "West") %>%
+      filter(!is.na(lat)) %>% 
+      usmap_transform() 
+  },
+  ignoreNULL = FALSE
+)
+
+output$weatherplot <- renderPlotly({
+    g <- plot_usmap(fill = "#008080", include = .west_region, alpha = 0.2, color = "#2c3e50" ) +
+      geom_point(data = weather_counts(),
+             aes(x = x, y = y, text=label),
+             color = "darkblue", alpha = 0.5) +
+      geom_text(data = weather_counts(),
+                            aes(x = x, y = y, label = city),
+                            size = 4, alpha = 0.8) +
+  labs(title = paste0("City with most number of days with ", input$input_weather))
+    ggplotly(g, tooltip = "text") %>% style(textposition = "top right") %>% layout(height = 600, width = 700)
+})
+```
+
+
+::: callout-tip
+You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy). Follow me on [medium](https://medium.com/@menghani.deepsha) and [linkedIn](www.linkedin.com/in/deepshamenghani) to stay tuned for my next article.
+:::
