@@ -89,5 +89,12 @@
     "title": "TidyTuesday: Retail Sales data analysis with Plotly in R",
     "section": "5 Use “Crosstalk” with Plotly to enable selecting, highlighting and focusing",
     "text": "5 Use “Crosstalk” with Plotly to enable selecting, highlighting and focusing\nAs there are so many retail sectors, Crosstalk allows me to add a component where I can highlight one or more sectors making it easier to compare.\n\n## Create a crosstalk component\nsector_data <- SharedData$new(state_data_imputed, key = ~subsector, group = \"Select a Retail Sector\")\n\n# Plot similar to the previous plotly function but add a highlight command\nsector_data %>% \n  plot_ly( type = 'scatter', mode = 'lines') %>%\n  add_trace(x = ~date, y = ~change_yoy, color = ~subsector,\n    hoverinfo = \"text\", text = ~paste0(subsector,\"\\n\",date,\"\\n\",change_yoy)) %>%\n  layout(showlegend = F, title='Washington Retail Sales delta YoY',\n         xaxis = list(rangeslider = list(visible = T))) %>%\n  layout(\n         xaxis = list(zerolinecolor = '#ffff',\n                      zerolinewidth = 2,\n                      gridcolor = 'ffff',\n                      title = ''),\n         yaxis = list(zerolinecolor = '#ffff',\n                      zerolinewidth = 2,\n                      gridcolor = 'ffff',\n                      title = 'Change YoY',\n                      range=list(-150, 500)),\n         plot_bgcolor='#e5ecf6', width = 750) %>%\n  highlight(selectize = TRUE, persistent = TRUE) # This adds the selectize option to easily input sector\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nYou can find my github code repository here. Follow me on medium and linkedIn to stay tuned for my next article."
+  },
+  {
+    "objectID": "Readme.html",
+    "href": "Readme.html",
+    "title": "Week_50_RetailSales",
+    "section": "",
+    "text": "Tidy Tuesday 2022, Week 50 - US Monthly Retail Sales\n\n\n\nPlotly_retail_sales_monthlychange"
   }
 ]
