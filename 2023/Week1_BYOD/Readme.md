@@ -1,6 +1,6 @@
 Create a racing bar chart using ggplot2 for the most popular names in the last decade.
 
-The data comes from the “Babynames” package by Hadley Wickham.
+The data comes from the “Babynames” package by Hadley Wickham. The inspiration and learning to make the plot comes from this [Rladies presentation by Gina Reynolds](https://evamaerey.github.io/little_flipbooks_library/racing_bars/racing_barcharts.html#1).
 
 ![popular_names_Male](https://user-images.githubusercontent.com/46545400/210443616-7956707c-c18c-4be9-a4f5-b9228256bec6.gif)
 
