@@ -104,7 +104,7 @@ bird_plot <- plot_geo(birdfeeder_US_top,
   ) %>% 
   style(hoverlabel = list(font = list(size=20))) %>% 
   # config(displayModeBar = FALSE) %>%
-  # add_annotations(x = 0.75, y=0.66, text = str_glue("Highest sightings\nNY"), ax = 5, ay = -80, font = list(size = 14)) %>% 
+  # add_annotations(x = 0.75, y=0.66, text = str_glue("Highest sightings\nPA"), ax = 5, ay = -80, font = list(size = 14)) %>% 
   add_annotations(
     showarrow = F,
     x = 0.1,
