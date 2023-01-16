@@ -13,6 +13,8 @@ format:
     toc: false
     number-sections: true
 link-citations: yes
+categories: [code, spacial, visualization, plotly]
+image: "birdsightings_daejun.png"
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(

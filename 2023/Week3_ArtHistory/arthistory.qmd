@@ -1,0 +1,90 @@
+---
+title: "Tidy Tuesday: Quantifying Art history data"
+date: 1/17/2023
+author:
+  - name: Deepsha Menghani 
+    url: https://github.com/deepshamenghani
+title-block-banner: true
+format:
+  html:
+    theme: flatly
+    code-fold: false
+    code-tools: true
+    toc: false
+    number-sections: true
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.height = 7
+)
+```
+
+In this post, I will analyse the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/tree/master/) Art history dataset.
+
+[Arthistory data package](https://saralemus7.github.io/arthistory/) contains both artist-level and work-level data that was collected along with variables regarding the artists\' demographics and numeric metrics for describing how much space they or their work took up in each edition of each textbook.
+
+::: callout-tip
+You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/Week3_ArtHistory).
+:::
+
+## Load libraries
+
+```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}
+
+# For loading Tidy Tuesday data
+library(tidytuesdayR)
+
+# EDA
+library(tidyverse)
+library(DT)
+library(plotly)
+
+
+```
+
+## Load data
+
+```{r}
+
+artists <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-01-17/artists.csv')
+
+```
+## EDA
+
+```{r}
+artists %>% 
+  ggplot(aes(year, space_ratio_per_page_total, color = artist_race_nwi)) +
+  geom_point()
+```
+
+
+```{r}
+artists %>% 
+  count(year, artist_race_nwi) %>% 
+  arrange(year) %>% 
+  ggplot(aes(year, n, fill = artist_race_nwi)) +
+  geom_col(position = "stack")
+```
+
+```{r}
+artists %>% 
+  # filter(year >= 2000) %>% 
+  filter((book %in% c("Gardner"))) %>% 
+  group_by(year, artist_race_nwi) %>% 
+  summarise(maxspace = max(space_ratio_per_page_total, na.rm=TRUE),
+            avgspace = mean(space_ratio_per_page_total, na.rm=TRUE),
+            minspace = min(space_ratio_per_page_total, na.rm=TRUE)) %>% 
+  ungroup() %>% 
+  pivot_longer(maxspace:minspace,names_to = "type", values_to = "value") %>%
+  filter((type == "avgspace" & artist_race_nwi == "Non-White") | (type == "avgspace" & artist_race_nwi == "White")) %>%
+  ggplot(aes(year,value , color = artist_race_nwi)) +
+  geom_line()
+```
+
+
