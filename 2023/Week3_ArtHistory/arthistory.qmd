@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 In this post, I will analyse the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/tree/master/) Art history dataset.
 
-[Arthistory data package](https://saralemus7.github.io/arthistory/) contains both artist-level and work-level data that was collected along with variables regarding the artists\' demographics and numeric metrics for describing how much space they or their work took up in each edition of each textbook.
+[Arthistory data package](https://saralemus7.github.io/arthistory/) contains both artist-level and work-level data that was collected along with variables regarding the artists\' demographics and numeric metrics for describing how much space they or their work took up in each edition of each textbook - Janson’s History of Art and Gardner’s Art Through the Ages, two of the most popular art history textbooks used in the American education system.
 
 ::: callout-tip
 You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/Week3_ArtHistory).
@@ -43,8 +43,14 @@ library(tidytuesdayR)
 # EDA
 library(tidyverse)
 library(DT)
-library(plotly)
 
+# Plotting
+library(camcorder)
+library(showtext)
+library(ggthemes)
+library(cowplot)
+library(magick)
+library(ggimage)
 
 ```
 
@@ -59,32 +65,106 @@ artists <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/ti
 
 ```{r}
 artists %>% 
-  ggplot(aes(year, space_ratio_per_page_total, color = artist_race_nwi)) +
-  geom_point()
+  datatable()
 ```
 
-
+## Editing images using Magick
 ```{r}
-artists %>% 
-  count(year, artist_race_nwi) %>% 
-  arrange(year) %>% 
-  ggplot(aes(year, n, fill = artist_race_nwi)) +
-  geom_col(position = "stack")
+Gardnerimage <- image_read("GardnersATTP2.png")
+Gardnerimage_transparent <- image_colorize(Gardnerimage, opacity = 60, color = "white")
+Gardnerimage_transparent2 <- image_colorize(Gardnerimage, opacity = 20, color = "white")
 ```
 
+## Getting font 
 ```{r}
-artists %>% 
-  # filter(year >= 2000) %>% 
-  filter((book %in% c("Gardner"))) %>% 
-  group_by(year, artist_race_nwi) %>% 
+
+font_add(family = "MedievalSharp-Regular.ttf", regular= "MedievalSharp-Regular.ttf")
+showtext_auto()
+
+```
+
+## Updating data
+
+```{r}
+artist_spaces <- artists %>%
+  filter(!is.na(artist_race_nwi)) %>% 
+  filter(!(artist_gender %>% str_detect("N/A"))) %>% 
+  mutate(artist_gender_race = str_c(artist_gender, " (", artist_race_nwi,")")) %>% 
+  # filter((book %in% c("Gardner"))) %>%
+  group_by(book, year, artist_gender_race) %>%
   summarise(maxspace = max(space_ratio_per_page_total, na.rm=TRUE),
             avgspace = mean(space_ratio_per_page_total, na.rm=TRUE),
-            minspace = min(space_ratio_per_page_total, na.rm=TRUE)) %>% 
+            minspace = min(space_ratio_per_page_total, na.rm=TRUE)) %>%
   ungroup() %>% 
-  pivot_longer(maxspace:minspace,names_to = "type", values_to = "value") %>%
-  filter((type == "avgspace" & artist_race_nwi == "Non-White") | (type == "avgspace" & artist_race_nwi == "White")) %>%
-  ggplot(aes(year,value , color = artist_race_nwi)) +
-  geom_line()
+  mutate(artist_gender_race = as_factor(artist_gender_race)) %>% 
+  mutate(label = if_else(year == max(year), as.character(artist_gender_race), NA_character_)) %>% 
+  mutate(label_year = if_else(year %in% c(1936, 1959, 1986, 2016), as.character(year), NA_character_)) %>% 
+  filter((book %in% c("Gardner"))) 
 ```
+
+## Creating ggplot
+
+```{r}
+artist_space_plot <-  artist_spaces %>%
+  ggplot(aes(year, maxspace ,color = artist_gender_race)) +
+  geom_line(size = 2) +
+  geom_text(aes(label = label),
+            na.rm = TRUE,
+            size = 15,
+            hjust = -0.15,
+            vjust=0.5, family = "MedievalSharp-Regular.ttf") +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank()
+  ) +
+  scale_color_manual(values = c("#8c684e", "gray18", "#337b70", "yellow4")) +
+  # scale_color_manual(values = c("darkgreen", "gray18", "brown", "yellow4")) +
+  # scale_color_manual(values=c("#8c684e", "#337b70", "#0b0a5f", "#ce532a")) +
+  scale_y_continuous(limits = c(0, 3.5), breaks = seq(0, 3.5, by = 0.5)) +
+  scale_x_continuous(limits = c(1926, 2045), breaks = seq(1926, 2045, by = 30))  +
+  labs(
+    title = "Maximum page space by artist gender and race",
+    x= "",
+    y = "",
+    color = "",
+    subtitle = "Gardner’s Art Through the Ages"
+  ) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_text(hjust = 2, size = 50),
+    text = element_text(size = 2, family = "MedievalSharp-Regular.ttf", color="brown4"),
+    title = element_text(family = "MedievalSharp-Regular.ttf", color="brown4",size = 50, hjust= 1, vjust=10),
+    legend.position = "none"
+  )  +
+  geom_text(aes(label = label_year, y=0.01), 
+            na.rm = TRUE,
+            size = 18,
+            # hjust = -0.15,
+            vjust=0.7, family = "MedievalSharp-Regular.ttf", color="gray20")
+
+
+```
+
+## Superimposing with book cover
+
+```{r}
+ggdraw()  +
+  draw_image(Gardnerimage_transparent, x = 0.04, height=1.05) +
+  draw_plot(artist_space_plot) +
+  draw_image(Gardnerimage_transparent2, x = 0.97, y = 1.04, hjust = 1, vjust = 1, width = 0.25, height = 0.4) 
+```
+## Saving image with proper resolution
+
+```{r}
+ggsave("Arthistory_Gardner.png",device = "png", # device to use to save images
+       width = 9, # width of saved image
+       height = 12, # height of saved image
+       units = "in", # units for width and height
+       dpi = 300)
+
+```
+
+
+
 
 
