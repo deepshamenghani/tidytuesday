@@ -39,5 +39,8 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
+# html files
+# .html
+
 # Backup files
-CopyOfAfrican_language_sentiment.qmd
+African_language_sentiment_backup.qmd
