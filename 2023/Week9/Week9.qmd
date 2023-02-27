@@ -1,20 +1,11 @@
 ---
-title: "TidyTuesday: African Language Sentiment"
-date: 2023-02-28 
-author:
-  - name: Deepsha Menghani 
-    url: https://github.com/deepshamenghani
-title-block-banner: true
-format:
-  html:
-    theme: flatly
-    code-fold: false
-    code-tools: true
-    toc: false
-    number-sections: true
-link-citations: yes
-server: shiny
+title: "Week9"
 ---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -127,106 +118,4 @@ highcharter_plot_func(language_perc)
 ```
 
 
-```{r eval=FALSE}
 
-dump(list = c("highcharter_plot_func"), file = "./functions/highcharter_plot_func.R", append=FALSE)
-
-```
-
-## Shiny output from the above code
-
-hr()
-
-```{}
-
-{r}
-
-sliderInput(
-    inputId = "country_count",
-    label = h4("Minimum numbre of countries the language is spoken in"),
-    min = 1,
-    max = 4,
-    value = 1
-)
-
-actionButton(inputId = "apply", label = "Apply", icon("cog"), class = "btn btn-primary")
-
-highchartOutput(outputId = "language_plot")
-```
-
-hr()
-
-```{}
-
-{r}
-#| context: server
-# For loading Tidy Tuesday data
-library(tidytuesdayR)
-library(tidyverse)
-library(highcharter)
-library(rmarkdown)
-library(shiny)
-library(shinyWidgets)
-
-language_perc <- read_rds("./data/language_perc.rds")
-source("./functions/highcharter_plot_func.R")
-
-language_df <- eventReactive(input$apply, {
-  language_perc |> 
-      filter(countrycount >= input$country_count)
-}, ignoreNULL = FALSE)
-
-output$language_plot <- renderHighchart({
-    language_df() |> 
-    highcharter_plot_func()
-})
-```
-
-hr()
-
-
-```{r echo=FALSE}
-sliderInput(
-    inputId = "country_count",
-    label = h4("Minimum numbre of countries the language is spoken in"),
-    min = 1,
-    max = 4,
-    value = 1
-)
-
-actionButton(inputId = "apply", label = "Apply", icon("cog"), class = "btn btn-primary")
-
-highchartOutput(outputId = "language_plot")
-
-```
-
-
-```{r echo=FALSE}
-#| context: server
-# For loading Tidy Tuesday data
-library(tidytuesdayR)
-library(tidyverse)
-library(highcharter)
-library(rmarkdown)
-library(htmltools)
-library(htmlwidgets)
-library(shiny)
-library(shinyWidgets)
-
-language_perc <- read_rds("./data/language_perc.rds")
-source("./functions/highcharter_plot_func.R")
-
-language_df <- eventReactive(input$apply, {
-  language_perc |> 
-      filter(countrycount >= input$country_count)
-}, ignoreNULL = FALSE)
-
-output$language_plot <- renderHighchart({
-    language_df() |> 
-    highcharter_plot_func()
-})
-```
-
-::: callout-tip
-You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy). Follow me on [medium](https://medium.com/@menghani.deepsha) and [linkedIn](www.linkedin.com/in/deepshamenghani) to stay tuned for my next article.
-:::

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Deepsha Menghani">
+<meta name="dcterms.date" content="2023-02-28">
+
+<title>TidyTuesday: African Language Sentiment</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="index_files/libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="index_files/libs/jquery-3.5.1/jquery.min.js"></script>
+<script src="index_files/libs/proj4js-2.3.15/proj4.js"></script>
+<link href="index_files/libs/highcharts-9.3.1/css/motion.css" rel="stylesheet">
+<script src="index_files/libs/highcharts-9.3.1/highcharts.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/highcharts-3d.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/highcharts-more.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/stock.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/map.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/data.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/exporting.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/offline-exporting.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/drilldown.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/item-series.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/overlapping-datalabels.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/annotations.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/export-data.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/funnel.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/heatmap.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/treemap.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/sankey.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/dependency-wheel.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/organization.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/solid-gauge.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/streamgraph.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/sunburst.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/vector.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/wordcloud.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/xrange.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/tilemap.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/venn.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/gantt.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/timeline.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/parallel-coordinates.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/bullet.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/coloraxis.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/dumbbell.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/lollipop.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/series-label.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/plugins/motion.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/custom/reset.js"></script>
+<script src="index_files/libs/highcharts-9.3.1/modules/boost.js"></script>
+<script src="index_files/libs/highchart-binding-0.9.4/highchart.js"></script>
+
+
+</head>
+
+<body class="fullcontent">
+
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <div class="quarto-title-block"><div><h1 class="title">TidyTuesday: African Language Sentiment</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Deepsha Menghani </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 28, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="quarto" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="quarto"><span class="header-section-number">1</span> Quarto</h2>
+<p>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <a href="https://quarto.org" class="uri">https://quarto.org</a>.</p>
+<p>In this post, I will analyse the <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-02-28/readme.md">#TidyTuesday</a> African Language Sentiment data set.</p>
+<p>The data comes from <a href="https://github.com/afrisenti-semeval/afrisent-semeval-2023">AfriSenti: Sentiment Analysis dataset for 14 African languages</a> via <a href="https://github.com/shmuhammad2004">@shmuhammad2004</a> (the corresponding author on the <a href="https://arxiv.org/pdf/2302.08956.pdf">associated paper</a>, and an active member of the <a href="https://r4ds.io/join">R4DS Online Learning Community Slack</a>).</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can find my github code repository <a href="https://github.com/deepshamenghani/tidytuesday/tree/master/2023/Week9_Languages">here</a>.</p>
+</div>
+</div>
+</section>
+<section id="load-libraries" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="load-libraries"><span class="header-section-number">2</span> Load libraries</h2>
+<div class="cell" data-paged.print="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For loading Tidy Tuesday data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># EDA</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(highcharter)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Shiny in md</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shinyWidgets)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(htmltools)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(htmlwidgets)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="load-data" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="load-data"><span class="header-section-number">3</span> Load data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>afrisenti <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/afrisenti.csv'</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/languages.csv'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>language_scripts <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_scripts.csv'</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>language_countries <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_countries.csv'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>country_regions <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/country_regions.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-editing" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="data-editing"><span class="header-section-number">4</span> Data editing</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>language_count <span class="ot">=</span> afrisenti <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(language_iso_code, label) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(language_iso_code) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> (n<span class="sc">/</span><span class="fu">sum</span>(n))<span class="sc">*</span><span class="dv">100</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>n) </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>language_countries_comb <span class="ot">&lt;-</span> language_countries <span class="sc">|&gt;</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(language_iso_code) <span class="sc">|&gt;</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">countrylist =</span> <span class="fu">paste</span>(country, <span class="at">collapse =</span> <span class="st">", "</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">countrycount =</span> <span class="fu">n_distinct</span>(country)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>color_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">label =</span> <span class="fu">c</span>(<span class="st">"positive"</span>, <span class="st">"neutral"</span>, <span class="st">"negative"</span>), <span class="at">colorvalue =</span> <span class="fu">c</span>(<span class="st">"#007A4D"</span>, <span class="st">"#FFB612"</span>, <span class="st">"#DE3831"</span>)) </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>language_perc <span class="ot">&lt;-</span> language_count <span class="sc">|&gt;</span> </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(language_countries_comb) <span class="sc">|&gt;</span> </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(languages) <span class="sc">|&gt;</span> </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(color_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(language_perc, <span class="st">"./data/language_perc.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="highcharter-plot-function" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="highcharter-plot-function"><span class="header-section-number">5</span> Highcharter plot function</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>highcharter_plot_func <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hchart</span>(<span class="at">type =</span> <span class="st">"column"</span>, <span class="fu">hcaes</span>(<span class="at">x =</span> language, <span class="at">y =</span> perc, <span class="at">color =</span> colorvalue))  <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_plotOptions</span>(<span class="at">column =</span> <span class="fu">list</span>(<span class="at">stacking =</span> <span class="st">"normal"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_yAxis</span>(<span class="at">max =</span> <span class="dv">100</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">labels =</span> <span class="fu">list</span>(<span class="at">format =</span> <span class="st">"{value}%"</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">showFirstLabel =</span> <span class="cn">FALSE</span>, <span class="at">title =</span> <span class="st">""</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_tooltip</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">useHTML =</span> <span class="cn">TRUE</span>,                              </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">formatter =</span> <span class="fu">JS</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">        function(){</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">          outHTML = '&lt;b&gt;' + this.point.language + '&lt;br&gt;' + this.point.countrylist + '&lt;br&gt;' + this.point.label + '&lt;br&gt;' + Math.round(this.y) + '%'</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">          return(outHTML)</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">        }</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="st">        "</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">shape =</span> <span class="st">"callout"</span>, </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">borderWidth =</span> <span class="dv">0</span> </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_xAxis</span>(</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">""</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="fu">highcharter_plot_func</span>(language_perc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="htmlwidget-7a612c4c2b22c3ffd45c" style="width:100%;height:464px;" class="highchart html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7a612c4c2b22c3ffd45c">{"x":{"hc_opts":{"chart":{"reflow":true},"title":{"text":null},"yAxis":{"title":"","type":"linear","max":100,"min":0,"labels":{"format":"{value}%"},"showFirstLabel":false},"credits":{"enabled":false},"exporting":{"enabled":false},"boost":{"enabled":false},"plotOptions":{"series":{"label":{"enabled":false},"turboThreshold":0,"showInLegend":false},"treemap":{"layoutAlgorithm":"squarified"},"scatter":{"marker":{"symbol":"circle"}},"column":{"stacking":"normal"}},"series":[{"group":"group","data":[{"language_iso_code":"amh","label":"negative","perc":34.5253164556962,"countrylist":"Ethiopia","countrycount":1,"language":"Amharic","colorvalue":"#DE3831","y":34.5253164556962,"color":"#DE3831","name":"Amharic"},{"language_iso_code":"amh","label":"neutral","perc":43.2911392405063,"countrylist":"Ethiopia","countrycount":1,"language":"Amharic","colorvalue":"#FFB612","y":43.2911392405063,"color":"#FFB612","name":"Amharic"},{"language_iso_code":"amh","label":"positive","perc":22.1835443037975,"countrylist":"Ethiopia","countrycount":1,"language":"Amharic","colorvalue":"#007A4D","y":22.1835443037975,"color":"#007A4D","name":"Amharic"},{"language_iso_code":"arq","label":"negative","perc":52.5967581872312,"countrylist":"Algeria","countrycount":1,"language":"Algerian Arabic/Darja","colorvalue":"#DE3831","y":52.5967581872312,"color":"#DE3831","name":"Algerian Arabic/Darja"},{"language_iso_code":"arq","label":"neutral","perc":19.2523982798545,"countrylist":"Algeria","countrycount":1,"language":"Algerian Arabic/Darja","colorvalue":"#FFB612","y":19.2523982798545,"color":"#FFB612","name":"Algerian Arabic/Darja"},{"language_iso_code":"arq","label":"positive","perc":28.1508435329143,"countrylist":"Algeria","countrycount":1,"language":"Algerian Arabic/Darja","colorvalue":"#007A4D","y":28.1508435329143,"color":"#007A4D","name":"Algerian Arabic/Darja"},{"language_iso_code":"ary","label":"negative","perc":29.3427749502102,"countrylist":"Morocco","countrycount":1,"language":"Moroccan Arabic/Darija","colorvalue":"#DE3831","y":29.3427749502102,"color":"#DE3831","name":"Moroccan Arabic/Darija"},{"language_iso_code":"ary","label":"neutral","perc":36.700597477318,"countrylist":"Morocco","countrycount":1,"language":"Moroccan Arabic/Darija","colorvalue":"#FFB612","y":36.700597477318,"color":"#FFB612","name":"Moroccan Arabic/Darija"},{"language_iso_code":"ary","label":"positive","perc":33.9566275724718,"countrylist":"Morocco","countrycount":1,"language":"Moroccan Arabic/Darija","colorvalue":"#007A4D","y":33.9566275724718,"color":"#007A4D","name":"Moroccan Arabic/Darija"},{"language_iso_code":"hau","label":"negative","perc":32.6200794510654,"countrylist":"Cameroon, Ghana, Nigeria","countrycount":3,"language":"Hausa","colorvalue":"#DE3831","y":32.6200794510654,"color":"#DE3831","name":"Hausa"},{"language_iso_code":"hau","label":"neutral","perc":34.2948717948718,"countrylist":"Cameroon, Ghana, Nigeria","countrycount":3,"language":"Hausa","colorvalue":"#FFB612","y":34.2948717948718,"color":"#FFB612","name":"Hausa"},{"language_iso_code":"hau","label":"positive","perc":33.0850487540628,"countrylist":"Cameroon, Ghana, Nigeria","countrycount":3,"language":"Hausa","colorvalue":"#007A4D","y":33.0850487540628,"color":"#007A4D","name":"Hausa"},{"language_iso_code":"ibo","label":"negative","perc":25.5361119949093,"countrylist":"Nigeria","countrycount":1,"language":"Igbo","colorvalue":"#DE3831","y":25.5361119949093,"color":"#DE3831","name":"Igbo"},{"language_iso_code":"ibo","label":"neutral","perc":44.1616290168629,"countrylist":"Nigeria","countrycount":1,"language":"Igbo","colorvalue":"#FFB612","y":44.1616290168629,"color":"#FFB612","name":"Igbo"},{"language_iso_code":"ibo","label":"positive","perc":30.3022589882278,"countrylist":"Nigeria","countrycount":1,"language":"Igbo","colorvalue":"#007A4D","y":30.3022589882278,"color":"#007A4D","name":"Igbo"},{"language_iso_code":"kin","label":"negative","perc":34.6847720659554,"countrylist":"Rwanda","countrycount":1,"language":"Kinyarwanda","colorvalue":"#DE3831","y":34.6847720659554,"color":"#DE3831","name":"Kinyarwanda"},{"language_iso_code":"kin","label":"neutral","perc":38.1183317167798,"countrylist":"Rwanda","countrycount":1,"language":"Kinyarwanda","colorvalue":"#FFB612","y":38.1183317167798,"color":"#FFB612","name":"Kinyarwanda"},{"language_iso_code":"kin","label":"positive","perc":27.1968962172648,"countrylist":"Rwanda","countrycount":1,"language":"Kinyarwanda","colorvalue":"#007A4D","y":27.1968962172648,"color":"#007A4D","name":"Kinyarwanda"},{"language_iso_code":"orm","label":"negative","perc":38.0112269446672,"countrylist":"Ethiopia","countrycount":1,"language":"Oromo","colorvalue":"#DE3831","y":38.0112269446672,"color":"#DE3831","name":"Oromo"},{"language_iso_code":"orm","label":"neutral","perc":41.018444266239,"countrylist":"Ethiopia","countrycount":1,"language":"Oromo","colorvalue":"#FFB612","y":41.018444266239,"color":"#FFB612","name":"Oromo"},{"language_iso_code":"orm","label":"positive","perc":20.9703287890938,"countrylist":"Ethiopia","countrycount":1,"language":"Oromo","colorvalue":"#007A4D","y":20.9703287890938,"color":"#007A4D","name":"Oromo"},{"language_iso_code":"pcm","label":"negative","perc":60.4395604395604,"countrylist":"Cameroon, Ghana, Nigeria","countrycount":3,"language":"Nigerian Pidgin","colorvalue":"#DE3831","y":60.4395604395604,"color":"#DE3831","name":"Nigerian Pidgin"},{"language_iso_code":"pcm","label":"neutral","perc":4.96400151572565,"countrylist":"Cameroon, Ghana, Nigeria","countrycount":3,"language":"Nigerian Pidgin","colorvalue":"#FFB612","y":4.96400151572565,"color":"#FFB612","name":"Nigerian Pidgin"},{"language_iso_code":"pcm","label":"positive","perc":34.5964380447139,"countrylist":"Cameroon, Ghana, Nigeria","countrycount":3,"language":"Nigerian Pidgin","colorvalue":"#007A4D","y":34.5964380447139,"color":"#007A4D","name":"Nigerian Pidgin"},{"language_iso_code":"pt-MZ","label":"negative","perc":21.79658302189,"countrylist":"Mozambique","countrycount":1,"language":"Mozambican Portuguese","colorvalue":"#DE3831","y":21.79658302189,"color":"#DE3831","name":"Mozambican Portuguese"},{"language_iso_code":"pt-MZ","label":"neutral","perc":58.4490122797651,"countrylist":"Mozambique","countrycount":1,"language":"Mozambican Portuguese","colorvalue":"#FFB612","y":58.4490122797651,"color":"#FFB612","name":"Mozambican Portuguese"},{"language_iso_code":"pt-MZ","label":"positive","perc":19.7544046983449,"countrylist":"Mozambique","countrycount":1,"language":"Mozambican Portuguese","colorvalue":"#007A4D","y":19.7544046983449,"color":"#007A4D","name":"Mozambican Portuguese"},{"language_iso_code":"swa","label":"negative","perc":10.5944868814347,"countrylist":"Kenya, Mozambique, Tanzania","countrycount":3,"language":"Swahili","colorvalue":"#DE3831","y":10.5944868814347,"color":"#DE3831","name":"Swahili"},{"language_iso_code":"swa","label":"neutral","perc":59.2494187977416,"countrylist":"Kenya, Mozambique, Tanzania","countrycount":3,"language":"Swahili","colorvalue":"#FFB612","y":59.2494187977416,"color":"#FFB612","name":"Swahili"},{"language_iso_code":"swa","label":"positive","perc":30.1560943208236,"countrylist":"Kenya, Mozambique, Tanzania","countrycount":3,"language":"Swahili","colorvalue":"#007A4D","y":30.1560943208236,"color":"#007A4D","name":"Swahili"},{"language_iso_code":"tir","label":"negative","perc":49.4161801501251,"countrylist":"Ethiopia","countrycount":1,"language":"Tigrinya","colorvalue":"#DE3831","y":49.4161801501251,"color":"#DE3831","name":"Tigrinya"},{"language_iso_code":"tir","label":"neutral","perc":21.2260216847373,"countrylist":"Ethiopia","countrycount":1,"language":"Tigrinya","colorvalue":"#FFB612","y":21.2260216847373,"color":"#FFB612","name":"Tigrinya"},{"language_iso_code":"tir","label":"positive","perc":29.3577981651376,"countrylist":"Ethiopia","countrycount":1,"language":"Tigrinya","colorvalue":"#007A4D","y":29.3577981651376,"color":"#007A4D","name":"Tigrinya"},{"language_iso_code":"tso","label":"negative","perc":35.3687549563838,"countrylist":"Eswatini, Mozambique, South Africa, Zimbabwe","countrycount":4,"language":"Xitsonga","colorvalue":"#DE3831","y":35.3687549563838,"color":"#DE3831","name":"Xitsonga"},{"language_iso_code":"tso","label":"neutral","perc":16.9706582077716,"countrylist":"Eswatini, Mozambique, South Africa, Zimbabwe","countrycount":4,"language":"Xitsonga","colorvalue":"#FFB612","y":16.9706582077716,"color":"#FFB612","name":"Xitsonga"},{"language_iso_code":"tso","label":"positive","perc":47.6605868358446,"countrylist":"Eswatini, Mozambique, South Africa, Zimbabwe","countrycount":4,"language":"Xitsonga","colorvalue":"#007A4D","y":47.6605868358446,"color":"#007A4D","name":"Xitsonga"},{"language_iso_code":"twi","label":"negative","perc":37.6712328767123,"countrylist":"Ghana","countrycount":1,"language":"Twi","colorvalue":"#DE3831","y":37.6712328767123,"color":"#DE3831","name":"Twi"},{"language_iso_code":"twi","label":"neutral","perc":15.0684931506849,"countrylist":"Ghana","countrycount":1,"language":"Twi","colorvalue":"#FFB612","y":15.0684931506849,"color":"#FFB612","name":"Twi"},{"language_iso_code":"twi","label":"positive","perc":47.2602739726027,"countrylist":"Ghana","countrycount":1,"language":"Twi","colorvalue":"#007A4D","y":47.2602739726027,"color":"#007A4D","name":"Twi"},{"language_iso_code":"yor","label":"negative","perc":21.7888543663648,"countrylist":"Nigeria","countrycount":1,"language":"Yorùbá","colorvalue":"#DE3831","y":21.7888543663648,"color":"#DE3831","name":"Yorùbá"},{"language_iso_code":"yor","label":"neutral","perc":36.2728895352681,"countrylist":"Nigeria","countrycount":1,"language":"Yorùbá","colorvalue":"#FFB612","y":36.2728895352681,"color":"#FFB612","name":"Yorùbá"},{"language_iso_code":"yor","label":"positive","perc":41.9382560983672,"countrylist":"Nigeria","countrycount":1,"language":"Yorùbá","colorvalue":"#007A4D","y":41.9382560983672,"color":"#007A4D","name":"Yorùbá"}],"type":"column"}],"xAxis":{"type":"category","title":""},"tooltip":{"useHTML":true,"formatter":"\n        function(){\n          outHTML = '<b>' + this.point.language + '<br>' + this.point.countrylist + '<br>' + this.point.label + '<br>' + Math.round(this.y) + '%'\n          return(outHTML)\n        }\n  \n        ","shape":"callout","borderWidth":0}},"theme":{"chart":{"backgroundColor":"transparent"},"colors":["#7cb5ec","#434348","#90ed7d","#f7a35c","#8085e9","#f15c80","#e4d354","#2b908f","#f45b5b","#91e8e1"]},"conf_opts":{"global":{"Date":null,"VMLRadialGradientURL":"http =//code.highcharts.com/list(version)/gfx/vml-radial-gradient.png","canvasToolsURL":"http =//code.highcharts.com/list(version)/modules/canvas-tools.js","getTimezoneOffset":null,"timezoneOffset":0,"useUTC":true},"lang":{"contextButtonTitle":"Chart context menu","decimalPoint":".","downloadCSV":"Download CSV","downloadJPEG":"Download JPEG image","downloadPDF":"Download PDF document","downloadPNG":"Download PNG image","downloadSVG":"Download SVG vector image","downloadXLS":"Download XLS","drillUpText":"◁ Back to {series.name}","exitFullscreen":"Exit from full screen","exportData":{"annotationHeader":"Annotations","categoryDatetimeHeader":"DateTime","categoryHeader":"Category"},"hideData":"Hide data table","invalidDate":null,"loading":"Loading...","months":["January","February","March","April","May","June","July","August","September","October","November","December"],"noData":"No data to display","numericSymbolMagnitude":1000,"numericSymbols":["k","M","G","T","P","E"],"printChart":"Print chart","resetZoom":"Reset zoom","resetZoomTitle":"Reset zoom level 1:1","shortMonths":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"shortWeekdays":["Sat","Sun","Mon","Tue","Wed","Thu","Fri"],"thousandsSep":" ","viewData":"View data table","viewFullscreen":"View in full screen","weekdays":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]}},"type":"chart","fonts":[],"debug":false},"evals":["hc_opts.tooltip.formatter"],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dump</span>(<span class="at">list =</span> <span class="fu">c</span>(<span class="st">"highcharter_plot_func"</span>), <span class="at">file =</span> <span class="st">"./functions/highcharter_plot_func.R"</span>, <span class="at">append=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<!-- -->
+
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "TidyTuesday: African Language Sentiment"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2023-02-28 </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Deepsha Menghani </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">    url: https://github.com/deepshamenghani</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> true</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: flatly</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: false</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="an">link-citations:</span><span class="co"> yes</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Quarto</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <span class="ot">&lt;https://quarto.org&gt;</span>.</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">eval =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>In this post, I will analyse the <span class="co">[</span><span class="ot">#TidyTuesday</span><span class="co">](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-02-28/readme.md)</span> African Language Sentiment data set.</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>The data comes from <span class="co">[</span><span class="ot">AfriSenti: Sentiment Analysis dataset for 14 African languages</span><span class="co">](https://github.com/afrisenti-semeval/afrisent-semeval-2023)</span> via <span class="co">[</span><span class="ot">\@shmuhammad2004</span><span class="co">](https://github.com/shmuhammad2004)</span> (the corresponding author on the <span class="co">[</span><span class="ot">associated paper</span><span class="co">](https://arxiv.org/pdf/2302.08956.pdf)</span>, and an active member of the <span class="co">[</span><span class="ot">R4DS Online Learning Community Slack</span><span class="co">](https://r4ds.io/join)</span>).</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>You can find my github code repository <span class="co">[</span><span class="ot">here</span><span class="co">](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/Week9_Languages)</span>.</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load libraries</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co"># For loading Tidy Tuesday data</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="co"># EDA</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(highcharter)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Shiny in md</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shinyWidgets)</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(htmltools)</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(htmlwidgets)</span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load data</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>afrisenti <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/afrisenti.csv'</span>)</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/languages.csv'</span>)</span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>language_scripts <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_scripts.csv'</span>)</span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>language_countries <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_countries.csv'</span>)</span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>country_regions <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/country_regions.csv'</span>)</span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data editing</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>language_count <span class="ot">=</span> afrisenti <span class="sc">|&gt;</span> </span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(language_iso_code, label) <span class="sc">|&gt;</span> </span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(language_iso_code) <span class="sc">|&gt;</span> </span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> (n<span class="sc">/</span><span class="fu">sum</span>(n))<span class="sc">*</span><span class="dv">100</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>n) </span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>language_countries_comb <span class="ot">&lt;-</span> language_countries <span class="sc">|&gt;</span> </span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(language_iso_code) <span class="sc">|&gt;</span> </span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">countrylist =</span> <span class="fu">paste</span>(country, <span class="at">collapse =</span> <span class="st">", "</span>),</span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a>            <span class="at">countrycount =</span> <span class="fu">n_distinct</span>(country)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>color_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">label =</span> <span class="fu">c</span>(<span class="st">"positive"</span>, <span class="st">"neutral"</span>, <span class="st">"negative"</span>), <span class="at">colorvalue =</span> <span class="fu">c</span>(<span class="st">"#007A4D"</span>, <span class="st">"#FFB612"</span>, <span class="st">"#DE3831"</span>)) </span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>language_perc <span class="ot">&lt;-</span> language_count <span class="sc">|&gt;</span> </span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(language_countries_comb) <span class="sc">|&gt;</span> </span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(languages) <span class="sc">|&gt;</span> </span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(color_df)</span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(language_perc, <span class="st">"./data/language_perc.rds"</span>)</span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="fu">## Highcharter plot function</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=TRUE}</span></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>highcharter_plot_func <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span> </span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hchart</span>(<span class="at">type =</span> <span class="st">"column"</span>, <span class="fu">hcaes</span>(<span class="at">x =</span> language, <span class="at">y =</span> perc, <span class="at">color =</span> colorvalue))  <span class="sc">|&gt;</span> </span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_plotOptions</span>(<span class="at">column =</span> <span class="fu">list</span>(<span class="at">stacking =</span> <span class="st">"normal"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_yAxis</span>(<span class="at">max =</span> <span class="dv">100</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">labels =</span> <span class="fu">list</span>(<span class="at">format =</span> <span class="st">"{value}%"</span>),</span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a>                <span class="at">showFirstLabel =</span> <span class="cn">FALSE</span>, <span class="at">title =</span> <span class="st">""</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_tooltip</span>(</span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>      <span class="at">useHTML =</span> <span class="cn">TRUE</span>,                              </span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a>      <span class="at">formatter =</span> <span class="fu">JS</span>(</span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="st">        function(){</span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="st">          outHTML = '&lt;b&gt;' + this.point.language + '&lt;br&gt;' + this.point.countrylist + '&lt;br&gt;' + this.point.label + '&lt;br&gt;' + Math.round(this.y) + '%'</span></span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="st">          return(outHTML)</span></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="st">        }</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a><span class="st">        "</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a>      <span class="at">shape =</span> <span class="st">"callout"</span>, </span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a>      <span class="at">borderWidth =</span> <span class="dv">0</span> </span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hc_xAxis</span>(</span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">""</span></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="fu">highcharter_plot_func</span>(language_perc)</span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="fu">dump</span>(<span class="at">list =</span> <span class="fu">c</span>(<span class="st">"highcharter_plot_func"</span>), <span class="at">file =</span> <span class="st">"./functions/highcharter_plot_func.R"</span>, <span class="at">append=</span><span class="cn">FALSE</span>)</span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

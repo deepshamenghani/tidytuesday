@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Deepsha Menghani">
+<meta name="dcterms.date" content="2023-02-26">
+
+<title>TidyTuesday: Weather Forecast Accuracy analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <div class="quarto-title-block"><div><h1 class="title">TidyTuesday: Weather Forecast Accuracy analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Deepsha Menghani </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 26, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>In this post, I will analyse the <a href="https://github.com/rfordatascience/tidytuesday/tree/master/">#TidyTuesday</a> dataset about Weather Forecast Accuracy in the US across all States.</p>
+<p>The data includes 16 months of forecasts and observations from 167 cities, as well as a separate data.frame of information about those cities and some other American cities. You can find the dataset on Tidy Tuesday <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-12-20">here</a>.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can find my github code repository <a href="https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy">here</a>.</p>
+</div>
+</div>
+<section id="load-libraries" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="load-libraries"><span class="header-section-number">1</span> Load libraries</h2>
+<div class="cell" data-paged.print="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For loading Tidy Tuesday data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># EDA</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(usmap)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Shiny in md</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="load-data" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="load-data"><span class="header-section-number">2</span> Load data</h2>
+<div class="cell">
+
+</div>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Weather Forcasts</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Cities</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Outlook meanings</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(weather_forecasts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  date       city  state high_…¹ forec…² obser…³ forec…⁴ obser…⁵ forec…⁶ possi…⁷
+  &lt;date&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  
+1 2021-01-30 ABIL… TX    high         48      70      NA       0 &lt;NA&gt;    none   
+2 2021-01-30 ABIL… TX    high         36      70      NA       0 &lt;NA&gt;    none   
+3 2021-01-30 ABIL… TX    high         24      70      NA       0 &lt;NA&gt;    none   
+4 2021-01-30 ABIL… TX    high         12      70      70       0 DUST    none   
+5 2021-01-30 ABIL… TX    low          48      42      NA       0 &lt;NA&gt;    none   
+6 2021-01-30 ABIL… TX    low          36      42      NA       0 &lt;NA&gt;    none   
+# … with abbreviated variable names ¹​high_or_low, ²​forecast_hours_before,
+#   ³​observed_temp, ⁴​forecast_temp, ⁵​observed_precip, ⁶​forecast_outlook,
+#   ⁷​possible_error</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 11
+  city   state    lon   lat koppen eleva…¹ dista…²  wind eleva…³ eleva…⁴ avg_a…⁵
+  &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1 ABILE… TX     -99.7  32.4 Cfa      545.    329.   4.43    66.7    66.7    26.8
+2 AKRON… OH     -81.4  40.9 Dfa      370.    330.   4.28    64.7    64.7    44.7
+3 ALBANY NY     -73.8  42.8 Dfb       85.0    99.8  3.28    79.3    97.4    44.7
+4 ALBUQ… NM    -107.   35.0 BSk     1620.    519.   3.04   112.    147.     10.1
+5 ALLEN… PA     -75.5  40.6 Dfa      118.     48.4  3.34    44.8   144.     52.3
+6 AMARI… TX    -102.   35.2 BSk     1098.    568.   5.14    31.5    72.4    20.2
+# … with abbreviated variable names ¹​elevation, ²​distance_to_coast,
+#   ³​elevation_change_four, ⁴​elevation_change_eight, ⁵​avg_annual_precip</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  forecast_outlook meaning      
+  &lt;chr&gt;            &lt;chr&gt;        
+1 DUST             Dust         
+2 SUNNY            Sunny        
+3 MOCLDY           Mostly Cloudy
+4 SNOW             Snow         
+5 PTCLDY           Partly Cloudy
+6 RAIN             Rain         </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="incorporating-shiny-in-quarto-markdown" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="incorporating-shiny-in-quarto-markdown"><span class="header-section-number">3</span> Incorporating Shiny in Quarto markdown</h2>
+<p><strong>Start with adding the shiny server to the yaml component of the markdown and install the <em>‘rmarkdown’</em> package. Below is what the looks like.</strong></p>
+<div class="cell">
+<pre class="code cell-code"><code>---
+title: 'TidyTuesday: Weather Forecast Accuracy analysis'
+date: today 
+author:
+  - name: Deepsha Menghani 
+    url: https://github.com/deepshamenghani
+title-block-banner: true
+format:
+  html:
+    theme: flatly
+    code-fold: true
+    code-tools: true
+    toc: false
+    number-sections: true
+link-citations: yes
+server: shiny
+---</code></pre>
+</div>
+<p><strong>Add any input components to your shiny app before adding interactivity. Below is what the UI component looks like with an input command and a call to plot the output which will be created within the server. </strong></p>
+<div class="cell">
+<pre class="code cell-code"><code>selectizeInput(
+    inputId = "input_weather",
+    label = h4("Cities with most number of days of"),
+    choices = unique(outlook_meanings$meaning),
+    selected = "Rain",
+    multiple = FALSE,
+    options = list(maxItems = 1)
+)
+
+plotlyOutput(outputId = "weatherplot")</code></pre>
+</div>
+<p><strong>The above call to plot the output is generated within the server code chunk that begins with ‘#| context: server’. Below is what that looks like.</strong></p>
+<div class="cell" data-context="server">
+<pre class="code cell-code"><code>library(tidyverse)
+library(rmarkdown)
+library(plotly)
+library(shiny)
+library(usmap)
+
+weather_forecasts &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv')
+cities &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv')
+outlook_meanings &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv')
+
+weather_counts &lt;- eventReactive(
+  eventExpr = input$input_weather,
+  valueExpr = {
+      weather_forecasts %&gt;% 
+      filter(forecast_hours_before == 12) %&gt;%
+      left_join(outlook_meanings) %&gt;% 
+      filter(meaning == input$input_weather) %&gt;%
+      count(state, city, forecast_outlook) %&gt;% 
+      mutate(label = paste0(city,"\n",state, "\n",n)) %&gt;% 
+      group_by(state) %&gt;% 
+      arrange(desc(n)) %&gt;% 
+      filter(row_number() == 1) %&gt;%  
+      ungroup() %&gt;%  
+      left_join(cities %&gt;% select(city,state, lat, lon)) %&gt;%
+      mutate(Region = case_when(state %in% (usmap::.northeast_region) ~ "Northeast",
+                                state %in% (usmap::.north_central_region) ~ "NorthCentral",
+                                state %in% (usmap::.midwest_region) ~ "Midwest",
+                                state %in% (usmap::.south_region) ~ "South",
+                                state %in% (usmap::.west_region) ~ "West",
+                                TRUE ~ "Other")) %&gt;% 
+      filter(Region == "West") %&gt;%
+      filter(!is.na(lat)) %&gt;% 
+      usmap_transform() 
+  },
+  ignoreNULL = FALSE
+)
+
+output$weatherplot &lt;- renderPlotly({
+    g &lt;- plot_usmap(fill = "#008080", include = .west_region, alpha = 0.2, color = "#2c3e50" ) +
+      geom_point(data = weather_counts(),
+             aes(x = x, y = y, text=label),
+             color = "darkblue", alpha = 0.5) +
+      geom_text(data = weather_counts(),
+                            aes(x = x, y = y, label = city),
+                            size = 4, alpha = 0.8) +
+  labs(title = paste0("City with most number of days with ", input$input_weather))
+    ggplotly(g, tooltip = "text") %&gt;% style(textposition = "top right") %&gt;% layout(height = 600, width = 700)
+})</code></pre>
+</div>
+</section>
+<section id="shiny-output-from-the-above-code" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="shiny-output-from-the-above-code"><span class="header-section-number">4</span> Shiny output from the above code</h2>
+<div class="cell">
+<div class="cell-output-display no-overflow-x">
+<div class="form-group shiny-input-container">
+<label class="control-label" id="input_weather-label" for="input_weather">
+<h4 class="anchored">Cities with most number of days of</h4>
+</label>
+<div>
+<select id="input_weather" class="form-control"><option value="Dust">Dust</option>
+<option value="Sunny">Sunny</option>
+<option value="Mostly Cloudy">Mostly Cloudy</option>
+<option value="Snow">Snow</option>
+<option value="Partly Cloudy">Partly Cloudy</option>
+<option value="Rain" selected="">Rain</option>
+<option value="Rain Showers">Rain Showers</option>
+<option value="Cloudy">Cloudy</option>
+<option value="Freezing Drizzle">Freezing Drizzle</option>
+<option value="Fog">Fog</option>
+<option value="Windy">Windy</option>
+<option value="Snow Showers">Snow Showers</option>
+<option value="Rain and Snow">Rain and Snow</option>
+<option value="Sleet">Sleet</option>
+<option value="Very Cold">Very Cold</option>
+<option value="Freezing Rain">Freezing Rain</option>
+<option value="Thunderstorms">Thunderstorms</option>
+<option value="Blizzard">Blizzard</option>
+<option value="Snow Flurries">Snow Flurries</option>
+<option value="Blowing Snow">Blowing Snow</option>
+<option value="Drizzle">Drizzle</option>
+<option value="Very Hot">Very Hot</option>
+<option value="Smoke">Smoke</option></select>
+<script type="application/json" data-for="input_weather">{"maxItems":1,"plugins":["selectize-plugin-a11y"]}</script>
+</div>
+</div>
+</div>
+<div class="cell-output-display">
+<p></p><div id="weatherplot" style="width:100%; height:400px; " class="plotly html-widget html-widget-output shiny-report-size shiny-report-theme"></div><p></p>
+</div>
+</div>
+<div class="cell" data-context="server">
+
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can find my github code repository <a href="https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy">here</a>. Follow me on <a href="https://medium.com/@menghani.deepsha">medium</a> and <a href="www.linkedin.com/in/deepshamenghani">linkedIn</a> to stay tuned for my next article.</p>
+</div>
+</div>
+<p>
+<script type="application/shiny-prerendered" data-context="server-start">
+knitr::opts_chunk$set(
+  echo = FALSE,
+  eval = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+library(tidyverse)
+library(rmarkdown)
+library(plotly)
+library(shiny)
+library(usmap)
+
+weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv')
+cities <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv')
+outlook_meanings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv')
+
+weather_counts <- eventReactive(
+  eventExpr = input$input_weather,
+  valueExpr = {
+      weather_forecasts %>% 
+      filter(forecast_hours_before == 12) %>%
+      left_join(outlook_meanings) %>% 
+      filter(meaning == input$input_weather) %>%
+      count(state, city, forecast_outlook) %>% 
+      mutate(label = paste0(city,"\n",state, "\n",n)) %>% 
+      group_by(state) %>% 
+      arrange(desc(n)) %>% 
+      filter(row_number() == 1) %>%  
+      ungroup() %>%  
+      left_join(cities %>% select(city,state, lat, lon)) %>%
+      mutate(Region = case_when(state %in% (usmap::.northeast_region) ~ "Northeast",
+                                state %in% (usmap::.north_central_region) ~ "NorthCentral",
+                                state %in% (usmap::.midwest_region) ~ "Midwest",
+                                state %in% (usmap::.south_region) ~ "South",
+                                state %in% (usmap::.west_region) ~ "West",
+                                TRUE ~ "Other")) %>% 
+      filter(Region == "West") %>%
+      filter(!is.na(lat)) %>% 
+      usmap_transform() 
+  },
+  ignoreNULL = FALSE
+)
+
+output$weatherplot <- renderPlotly({
+    g <- plot_usmap(fill = "#008080", include = .west_region, alpha = 0.2, color = "#2c3e50" ) +
+      geom_point(data = weather_counts(),
+             aes(x = x, y = y, text=label),
+             color = "darkblue", alpha = 0.5) +
+      geom_text(data = weather_counts(),
+                            aes(x = x, y = y, label = city),
+                            size = 4, alpha = 0.8) +
+  labs(title = paste0("City with most number of days with ", input$input_weather))
+    ggplotly(g, tooltip = "text") %>% style(textposition = "top right") %>% layout(height = 600, width = 700)
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server-extras">
+ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
+  quos <- rlang::enquos(...)
+  vars <- rlang::list2(...)
+  nm <- names(vars)
+  if (is.null(nm)) {
+    nm <- rep_len("", length(vars))
+  }
+  mapply(function(q, nm, val) {
+    # Infer name, if possible
+    if (nm == "") {
+      tryCatch({
+        nm <- rlang::as_name(q)
+      }, error = function(e) {
+        code <- paste(collapse = "\n", deparse(rlang::f_rhs(q)))
+        stop("ojs_define() could not create a name for the argument: ", code)
+      })
+    }
+    .session$output[[nm]] <- val
+    outputOptions(.session$output, nm, suspendWhenHidden = FALSE)
+    .session$sendCustomMessage("ojs-export", list(name = nm))
+    NULL
+  }, quos, nm, vars, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  invisible()
+}
+</script>
+</p>
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["selectize"]},{"type":"character","attributes":{},"value":["0.12.4"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["www/shared/selectize"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/selectize.min.js","accessibility/js/selectize-plugin-a11y.min.js"]},{"type":"character","attributes":{},"value":["css/selectize.bootstrap3.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["shiny"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.7.2"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets"]},{"type":"character","attributes":{},"value":["1.5.4"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["www"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["htmlwidgets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["htmlwidgets"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.5.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["plotly-binding"]},{"type":"character","attributes":{},"value":["4.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["plotly.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["plotly"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["4.10.0"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","bit","bit64","broom","bslib","cellranger","cli","colorspace","compiler","crayon","curl","data.table","datasets","DBI","dbplyr","digest","dplyr","DT","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jquerylib","jsonlite","knitr","later","lazyeval","lifecycle","lubridate","magrittr","methods","mime","modelr","munsell","parallel","pillar","pkgconfig","plotly","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rstudioapi","rvest","sass","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidytuesdayR","tidyverse","tools","tzdb","usethis","usmap","utf8","utils","vctrs","viridisLite","vroom","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.4.1","4.2.2","4.0.4","4.0.5","0.8.0","0.3.1","1.1.0","3.6.0","2.0-3","4.2.2","1.5.2","4.3.2","1.14.2","4.2.2","1.1.2","2.1.1","0.6.29","1.0.9","0.24","0.3.2","0.15","1.0.3","1.1.0","0.5.1","1.5.2","0.1.3","3.3.6","1.6.2","4.2.2","4.2.2","4.2.2","0.3.0","2.5.0","1.1.1","0.5.2","1.5.4","1.6.5","1.4.4","0.1.4","1.8.0","1.39","1.3.0","0.2.2","1.0.3","1.8.0","2.0.3","4.2.2","0.12","0.1.8","0.5.0","4.2.2","1.8.1","2.0.3","4.10.0","1.2.0.1","0.3.4","2.5.1","1.0.8.3","2.1.2","1.4.0","2.0.1","1.0.6","2.14","0.13","1.0.2","0.4.1","1.2.0","1.7.2","4.2.2","1.7.6","1.4.0","3.1.7","1.2.0","1.1.2","1.0.2","1.3.1","4.2.2","0.3.0","2.1.5","0.6.0","1.2.2","4.2.2","0.4.1","0.4.0","1.5.7","2.5.0","0.31","1.3.3","1.8-4","2.3.5"]}]}]}
+</script>
+<!--/html_preserve-->
+<!-- -->
+
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "TidyTuesday: Weather Forecast Accuracy analysis"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Deepsha Menghani </span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">    url: https://github.com/deepshamenghani</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> true</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: flatly</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: false</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="an">link-citations:</span><span class="co"> yes</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="an">server:</span><span class="co"> shiny</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">eval =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>In this post, I will analyse the <span class="co">[</span><span class="ot">#TidyTuesday</span><span class="co">](https://github.com/rfordatascience/tidytuesday/tree/master/)</span> dataset about Weather Forecast Accuracy in the US across all States.</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>The data includes 16 months of forecasts and observations from 167 cities, as well as a separate data.frame of information about those cities and some other American cities. You can find the dataset on Tidy Tuesday <span class="co">[</span><span class="ot">here</span><span class="co">](https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-12-20)</span>.</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>You can find my github code repository <span class="co">[</span><span class="ot">here</span><span class="co">](https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy)</span>.</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load libraries</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="in">```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co"># For loading Tidy Tuesday data</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co"># EDA</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(usmap)</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Shiny in md</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load data</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>weather_forecasts <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv'</span>)</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv'</span>)</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>outlook_meanings <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv'</span>)</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="fu">### Weather Forcasts</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=TRUE}</span></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(weather_forecasts)</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cities</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cities)</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### Outlook meanings</span></span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(outlook_meanings)</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a><span class="fu">## Incorporating Shiny in Quarto markdown</span></span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>__Start with adding the shiny server to the yaml component of the markdown and install the _'rmarkdown'_ package. Below is what the looks like.__</span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{code echo=TRUE}</span></span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a><span class="op">---</span></span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>title<span class="op">:</span> 'TidyTuesday<span class="op">:</span> Weather Forecast Accuracy analysis'</span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>date<span class="op">:</span> today </span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>author<span class="op">:</span></span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>  <span class="op">-</span> name<span class="op">:</span> Deepsha Menghani </span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>    url<span class="op">:</span> https<span class="op">:</span><span class="co">//github.com/deepshamenghani</span></span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>title<span class="op">-</span>block<span class="op">-</span>banner<span class="op">:</span> true</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>format<span class="op">:</span></span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>  html<span class="op">:</span></span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>    theme<span class="op">:</span> flatly</span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>    code<span class="op">-</span>fold<span class="op">:</span> true</span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>    code<span class="op">-</span>tools<span class="op">:</span> true</span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>    toc<span class="op">:</span> false</span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>    number<span class="op">-</span>sections<span class="op">:</span> true</span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>link<span class="op">-</span>citations<span class="op">:</span> yes</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>server<span class="op">:</span> shiny</span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a><span class="op">---</span></span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a>__Add any input components to your shiny app before adding interactivity. Below is what the UI component looks like with an input command and a call to plot the output which will be created within the server. __</span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{code echo=TRUE}</span></span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>selectizeInput<span class="op">(</span></span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>    inputId <span class="op">=</span> <span class="st">"input_weather"</span><span class="op">,</span></span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> h4<span class="op">(</span><span class="st">"Cities with most number of days of"</span><span class="op">),</span></span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>    choices <span class="op">=</span> unique<span class="op">(</span>outlook_meanings$meaning<span class="op">),</span></span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>    selected <span class="op">=</span> <span class="st">"Rain"</span><span class="op">,</span></span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>    multiple <span class="op">=</span> FALSE<span class="op">,</span></span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> list<span class="op">(</span>maxItems <span class="op">=</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>plotlyOutput<span class="op">(</span>outputId <span class="op">=</span> <span class="st">"weatherplot"</span><span class="op">)</span></span>
+<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a>__The above call to plot the output is generated within the server code chunk that begins with '#| context: server'. Below is what that looks like.__</span>
+<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{code echo=TRUE}</span></span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a><span class="er">#| context: server</span></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>library<span class="op">(</span>tidyverse<span class="op">)</span></span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>library<span class="op">(</span>rmarkdown<span class="op">)</span></span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>library<span class="op">(</span>plotly<span class="op">)</span></span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>library<span class="op">(</span>shiny<span class="op">)</span></span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>library<span class="op">(</span>usmap<span class="op">)</span></span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>weather_forecasts <span class="op">&lt;-</span> readr<span class="op">::</span>read_csv<span class="op">(</span>'https<span class="op">:</span><span class="co">//raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv')</span></span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>cities <span class="op">&lt;-</span> readr<span class="op">::</span>read_csv<span class="op">(</span>'https<span class="op">:</span><span class="co">//raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv')</span></span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>outlook_meanings <span class="op">&lt;-</span> readr<span class="op">::</span>read_csv<span class="op">(</span>'https<span class="op">:</span><span class="co">//raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv')</span></span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>weather_counts <span class="op">&lt;-</span> eventReactive<span class="op">(</span></span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>  eventExpr <span class="op">=</span> input$input_weather<span class="op">,</span></span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>  valueExpr <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>      weather_forecasts <span class="op">%&gt;%</span> </span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>      filter<span class="op">(</span>forecast_hours_before <span class="op">==</span> <span class="dv">12</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a>      left_join<span class="op">(</span>outlook_meanings<span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a>      filter<span class="op">(</span>meaning <span class="op">==</span> input$input_weather<span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>      count<span class="op">(</span>state<span class="op">,</span> city<span class="op">,</span> forecast_outlook<span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a>      mutate<span class="op">(</span>label <span class="op">=</span> paste0<span class="op">(</span>city<span class="op">,</span><span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="op">,</span>state<span class="op">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="op">,</span>n<span class="op">))</span> <span class="op">%&gt;%</span> </span>
+<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a>      group_by<span class="op">(</span>state<span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>      arrange<span class="op">(</span>desc<span class="op">(</span>n<span class="op">))</span> <span class="op">%&gt;%</span> </span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>      filter<span class="op">(</span>row_number<span class="op">()</span> <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">%&gt;%</span>  </span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>      ungroup<span class="op">()</span> <span class="op">%&gt;%</span>  </span>
+<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>      left_join<span class="op">(</span>cities <span class="op">%&gt;%</span> select<span class="op">(</span>city<span class="op">,</span>state<span class="op">,</span> lat<span class="op">,</span> lon<span class="op">))</span> <span class="op">%&gt;%</span></span>
+<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>      mutate<span class="op">(</span>Region <span class="op">=</span> case_when<span class="op">(</span>state <span class="op">%</span>in<span class="op">%</span> <span class="op">(</span>usmap<span class="op">::.</span>northeast_region<span class="op">)</span> <span class="op">~</span> <span class="st">"Northeast"</span><span class="op">,</span></span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>                                state <span class="op">%</span>in<span class="op">%</span> <span class="op">(</span>usmap<span class="op">::.</span>north_central_region<span class="op">)</span> <span class="op">~</span> <span class="st">"NorthCentral"</span><span class="op">,</span></span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>                                state <span class="op">%</span>in<span class="op">%</span> <span class="op">(</span>usmap<span class="op">::.</span>midwest_region<span class="op">)</span> <span class="op">~</span> <span class="st">"Midwest"</span><span class="op">,</span></span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a>                                state <span class="op">%</span>in<span class="op">%</span> <span class="op">(</span>usmap<span class="op">::.</span>south_region<span class="op">)</span> <span class="op">~</span> <span class="st">"South"</span><span class="op">,</span></span>
+<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>                                state <span class="op">%</span>in<span class="op">%</span> <span class="op">(</span>usmap<span class="op">::.</span>west_region<span class="op">)</span> <span class="op">~</span> <span class="st">"West"</span><span class="op">,</span></span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a>                                TRUE <span class="op">~</span> <span class="st">"Other"</span><span class="op">))</span> <span class="op">%&gt;%</span> </span>
+<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a>      filter<span class="op">(</span>Region <span class="op">==</span> <span class="st">"West"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>      filter<span class="op">(!</span>is<span class="op">.</span>na<span class="op">(</span>lat<span class="op">))</span> <span class="op">%&gt;%</span> </span>
+<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>      usmap_transform<span class="op">()</span> </span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
+<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a>  ignoreNULL <span class="op">=</span> FALSE</span>
+<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>output$weatherplot <span class="op">&lt;-</span> renderPlotly<span class="op">({</span></span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a>    g <span class="op">&lt;-</span> plot_usmap<span class="op">(</span>fill <span class="op">=</span> <span class="st">"#008080"</span><span class="op">,</span> include <span class="op">=</span> <span class="op">.</span>west_region<span class="op">,</span> alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">,</span> color <span class="op">=</span> <span class="st">"#2c3e50"</span> <span class="op">)</span> <span class="op">+</span></span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a>      geom_point<span class="op">(</span>data <span class="op">=</span> weather_counts<span class="op">(),</span></span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>             aes<span class="op">(</span>x <span class="op">=</span> x<span class="op">,</span> y <span class="op">=</span> y<span class="op">,</span> text<span class="op">=</span>label<span class="op">),</span></span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>             color <span class="op">=</span> <span class="st">"darkblue"</span><span class="op">,</span> alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>      geom_text<span class="op">(</span>data <span class="op">=</span> weather_counts<span class="op">(),</span></span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>                            aes<span class="op">(</span>x <span class="op">=</span> x<span class="op">,</span> y <span class="op">=</span> y<span class="op">,</span> label <span class="op">=</span> city<span class="op">),</span></span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>                            size <span class="op">=</span> <span class="dv">4</span><span class="op">,</span> alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a>  labs<span class="op">(</span>title <span class="op">=</span> paste0<span class="op">(</span><span class="st">"City with most number of days with "</span><span class="op">,</span> input$input_weather<span class="op">))</span></span>
+<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>    ggplotly<span class="op">(</span>g<span class="op">,</span> tooltip <span class="op">=</span> <span class="st">"text"</span><span class="op">)</span> <span class="op">%&gt;%</span> style<span class="op">(</span>textposition <span class="op">=</span> <span class="st">"top right"</span><span class="op">)</span> <span class="op">%&gt;%</span> layout<span class="op">(</span>height <span class="op">=</span> <span class="dv">600</span><span class="op">,</span> width <span class="op">=</span> <span class="dv">700</span><span class="op">)</span></span>
+<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="fu">## Shiny output from the above code</span></span>
+<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="fu">selectizeInput</span>(</span>
+<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputId =</span> <span class="st">"input_weather"</span>,</span>
+<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">h4</span>(<span class="st">"Cities with most number of days of"</span>),</span>
+<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a>    <span class="at">choices =</span> <span class="fu">unique</span>(outlook_meanings<span class="sc">$</span>meaning),</span>
+<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a>    <span class="at">selected =</span> <span class="st">"Rain"</span>,</span>
+<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a>    <span class="at">multiple =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">maxItems =</span> <span class="dv">1</span>)</span>
+<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a><span class="fu">plotlyOutput</span>(<span class="at">outputId =</span> <span class="st">"weatherplot"</span>)</span>
+<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a><span class="co">#| context: server</span></span>
+<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
+<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(usmap)</span>
+<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a>weather_forecasts <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv'</span>)</span>
+<span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/cities.csv'</span>)</span>
+<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a>outlook_meanings <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/outlook_meanings.csv'</span>)</span>
+<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a>weather_counts <span class="ot">&lt;-</span> <span class="fu">eventReactive</span>(</span>
+<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a>  <span class="at">eventExpr =</span> input<span class="sc">$</span>input_weather,</span>
+<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a>  <span class="at">valueExpr =</span> {</span>
+<span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a>      weather_forecasts <span class="sc">%&gt;%</span> </span>
+<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(forecast_hours_before <span class="sc">==</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(outlook_meanings) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(meaning <span class="sc">==</span> input<span class="sc">$</span>input_weather) <span class="sc">%&gt;%</span></span>
+<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a>      <span class="fu">count</span>(state, city, forecast_outlook) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">label =</span> <span class="fu">paste0</span>(city,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,state, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-226"><a href="#cb9-226" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(state) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="fu">row_number</span>() <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span>  </span>
+<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span>  </span>
+<span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(cities <span class="sc">%&gt;%</span> <span class="fu">select</span>(city,state, lat, lon)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Region =</span> <span class="fu">case_when</span>(state <span class="sc">%in%</span> (usmap<span class="sc">::</span>.northeast_region) <span class="sc">~</span> <span class="st">"Northeast"</span>,</span>
+<span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a>                                state <span class="sc">%in%</span> (usmap<span class="sc">::</span>.north_central_region) <span class="sc">~</span> <span class="st">"NorthCentral"</span>,</span>
+<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a>                                state <span class="sc">%in%</span> (usmap<span class="sc">::</span>.midwest_region) <span class="sc">~</span> <span class="st">"Midwest"</span>,</span>
+<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a>                                state <span class="sc">%in%</span> (usmap<span class="sc">::</span>.south_region) <span class="sc">~</span> <span class="st">"South"</span>,</span>
+<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a>                                state <span class="sc">%in%</span> (usmap<span class="sc">::</span>.west_region) <span class="sc">~</span> <span class="st">"West"</span>,</span>
+<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a>                                <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(Region <span class="sc">==</span> <span class="st">"West"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(lat)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a>      <span class="fu">usmap_transform</span>() </span>
+<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a>  <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>weatherplot <span class="ot">&lt;-</span> <span class="fu">renderPlotly</span>({</span>
+<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a>    g <span class="ot">&lt;-</span> <span class="fu">plot_usmap</span>(<span class="at">fill =</span> <span class="st">"#008080"</span>, <span class="at">include =</span> .west_region, <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span> ) <span class="sc">+</span></span>
+<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="at">data =</span> <span class="fu">weather_counts</span>(),</span>
+<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">text=</span>label),</span>
+<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"darkblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">weather_counts</span>(),</span>
+<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">label =</span> city),</span>
+<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a>                            <span class="at">size =</span> <span class="dv">4</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"City with most number of days with "</span>, input<span class="sc">$</span>input_weather))</span>
+<span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplotly</span>(g, <span class="at">tooltip =</span> <span class="st">"text"</span>) <span class="sc">%&gt;%</span> <span class="fu">style</span>(<span class="at">textposition =</span> <span class="st">"top right"</span>) <span class="sc">%&gt;%</span> <span class="fu">layout</span>(<span class="at">height =</span> <span class="dv">600</span>, <span class="at">width =</span> <span class="dv">700</span>)</span>
+<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-255"><a href="#cb9-255" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a>You can find my github code repository <span class="co">[</span><span class="ot">here</span><span class="co">](https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy)</span>. Follow me on <span class="co">[</span><span class="ot">medium</span><span class="co">](https://medium.com/@menghani.deepsha)</span> and <span class="co">[</span><span class="ot">linkedIn</span><span class="co">](www.linkedin.com/in/deepshamenghani)</span> to stay tuned for my next article.</span>
+<span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

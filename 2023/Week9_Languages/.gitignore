@@ -44,3 +44,4 @@ vignettes/*.pdf
 
 # Backup files
 African_language_sentiment_backup.qmd
+/.quarto/
