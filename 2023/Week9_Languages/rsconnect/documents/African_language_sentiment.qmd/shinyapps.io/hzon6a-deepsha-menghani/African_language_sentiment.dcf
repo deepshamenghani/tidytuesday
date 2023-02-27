@@ -1,0 +1,15 @@
+name: African_language_sentiment
+title: African_language_sentiment
+username:
+account: hzon6a-deepsha-menghani
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8418476
+bundleId: 6890910
+url: https://hzon6a-deepsha-menghani.shinyapps.io/African_language_sentiment/
+when: 1677467947.42646
+lastSyncTime: 1677467947.42647
+quarto_version: 1.2.269
+quarto_engines: knitr
+asMultiple: FALSE
+asStatic: FALSE
