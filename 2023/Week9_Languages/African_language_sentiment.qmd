@@ -1,0 +1,339 @@
+---
+title: "TidyTuesday: African Language Sentiment"
+date: 2023-02-28 
+author:
+  - name: Deepsha Menghani 
+    url: https://github.com/deepshamenghani
+title-block-banner: true
+format:
+  html:
+    theme: flatly
+    code-fold: false
+    code-tools: true
+    toc: false
+    number-sections: true
+link-citations: yes
+server: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  eval = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+In this post, I will analyse the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-02-28/readme.md) African Language Sentiment data set.
+
+The data comes from [AfriSenti: Sentiment Analysis dataset for 14 African languages](https://github.com/afrisenti-semeval/afrisent-semeval-2023) via [\@shmuhammad2004](https://github.com/shmuhammad2004) (the corresponding author on the [associated paper](https://arxiv.org/pdf/2302.08956.pdf), and an active member of the [R4DS Online Learning Community Slack](https://r4ds.io/join)).
+
+::: callout-tip
+You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy).
+:::
+
+## Load libraries
+
+```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}
+
+# For loading Tidy Tuesday data
+library(tidytuesdayR)
+
+# EDA
+library(tidyverse)
+library(highcharter)
+
+# Shiny in md
+library(rmarkdown)
+library(shiny)
+library(shinyWidgets)
+
+```
+
+## Load data
+
+```{r}
+afrisenti <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/afrisenti.csv')
+languages <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/languages.csv')
+language_scripts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_scripts.csv')
+language_countries <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_countries.csv')
+country_regions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/country_regions.csv')
+
+```
+
+## Data editing
+
+```{r}
+language_count = afrisenti |> 
+  count(language_iso_code, label) |> 
+  group_by(language_iso_code) |> 
+  mutate(perc = (n/sum(n))*100) |> 
+  ungroup() |> 
+  select(-n) 
+
+language_countries_comb <- language_countries |> 
+  group_by(language_iso_code) |> 
+  summarise(countrylist = paste(country, collapse = ", "),
+            countrycount = n_distinct(country)) |> 
+  ungroup()
+
+color_df <- data.frame(label = c("positive", "neutral", "negative"), colorvalue = c("#007A4D", "#FFB612", "#DE3831")) 
+
+language_perc <- language_count |> 
+  left_join(language_countries_comb) |> 
+  left_join(languages) |> 
+  left_join(color_df) 
+
+```
+
+## Highcharter plot function
+
+```{r eval=TRUE}
+
+language_perc |> 
+  hchart(type = "column", hcaes(x = language, y = perc, color = colorvalue))  |> 
+  hc_plotOptions(column = list(stacking = "normal")) |> 
+  hc_yAxis(max = 100, min = 0, labels = list(format = "{value}%"),
+              showFirstLabel = FALSE, title = "") |> 
+  hc_tooltip(
+    useHTML = TRUE,                              
+    formatter = JS(
+      "
+      function(){
+        outHTML = '<b>' + this.point.language + '<br>' + this.point.countrylist + '<br>' + this.point.label + '<br>' + Math.round(this.y) + '%'
+        return(outHTML)
+      }
+
+      "
+    ),
+    shape = "callout", 
+    borderWidth = 0 
+  ) |> 
+  hc_xAxis(
+    title = ""
+  )
+
+
+```
+
+## Incorporating Shiny in Quarto markdown
+
+**Start with adding the shiny server to the yaml component of the markdown and install the *'rmarkdown'* package. Below is what that looks like.**
+
+```{code echo=TRUE}
+---
+title: "TidyTuesday: African Language Sentiment"
+date: 2023-02-28 
+author:
+  - name: Deepsha Menghani 
+    url: https://github.com/deepshamenghani
+title-block-banner: true
+format:
+  html:
+    theme: flatly
+    code-fold: false
+    code-tools: true
+    toc: false
+    number-sections: true
+link-citations: yes
+server: shiny
+---
+```
+
+**Add any input components to your shiny app before adding interactivity. Below is what the UI component looks like with an input command and a call to plot the output which will be created within the server.**
+
+```{code echo=TRUE}
+sliderInput(
+    inputId = "country_count",
+    label = h4("Minimum numbre of countries the language is spoken in"),
+    min = 1,
+    max = 4,
+    value = 1
+)
+
+actionButton(inputId = "apply", label = "Apply", icon("cog"), class = "btn btn-primary")
+
+highchartOutput(outputId = "language_plot")
+```
+
+**The above call to plot the output is generated within the server code chunk that begins with '#\| context: server'. Below is what that looks like.**
+
+```{code echo=TRUE}
+#| context: server
+# For loading Tidy Tuesday data
+library(tidytuesdayR)
+
+# EDA
+library(tidyverse)
+library(highcharter)
+
+# Shiny in md
+library(rmarkdown)
+library(shiny)
+library(shinyWidgets)
+
+afrisenti <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/afrisenti.csv')
+languages <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/languages.csv')
+language_scripts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_scripts.csv')
+language_countries <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_countries.csv')
+country_regions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/country_regions.csv')
+
+language_count = afrisenti |> 
+  count(language_iso_code, label) |> 
+  group_by(language_iso_code) |> 
+  mutate(perc = (n/sum(n))*100) |> 
+  ungroup() |> 
+  select(-n) 
+
+language_countries_comb <- language_countries |> 
+  group_by(language_iso_code) |> 
+  summarise(countrylist = paste(country, collapse = ", "),
+            countrycount = n_distinct(country)) |> 
+  ungroup()
+
+color_df <- data.frame(label = c("positive", "neutral", "negative"), colorvalue = c("#007A4D", "#FFB612", "#DE3831")) 
+
+language_perc <- language_count |> 
+  left_join(language_countries_comb) |> 
+  left_join(languages) |> 
+  left_join(color_df)
+
+#| context: server
+
+language_df <- eventReactive(
+  eventExpr = input$apply,
+  valueExpr = {
+      language_perc |> 
+      filter(countrycount >= input$country_count)
+  },
+  ignoreNULL = FALSE
+)
+
+output$language_plot <- renderHighchart({
+    language_df() |> 
+  hchart(type = "column", hcaes(x = language, y = perc, color = colorvalue))  |> 
+  hc_plotOptions(column = list(stacking = "normal")) |> 
+  hc_yAxis(max = 100, min = 0, labels = list(format = "{value}%"),
+              showFirstLabel = FALSE, title = "") |> 
+  hc_tooltip(
+    useHTML = TRUE,                              
+    formatter = JS(
+      "
+      function(){
+        outHTML = '<b>' + this.point.language + '<br>' + this.point.countrylist + '<br>' + this.point.label + '<br>' + Math.round(this.y) + '%'
+        return(outHTML)
+      }
+
+      "
+    ),
+    shape = "callout", 
+    borderWidth = 0 
+  ) |> 
+  hc_xAxis(
+    title = ""
+  )
+
+})
+```
+
+## Shiny output from the above code
+
+```{r eval=TRUE}
+sliderInput(
+    inputId = "country_count",
+    label = h4("Minimum numbre of countries the language is spoken in"),
+    min = 1,
+    max = 4,
+    value = 1
+)
+
+actionButton(inputId = "apply", label = "Apply", icon("cog"), class = "btn btn-primary")
+
+highchartOutput(outputId = "language_plot")
+
+```
+
+```{r eval=TRUE}
+#| context: server
+# For loading Tidy Tuesday data
+library(tidytuesdayR)
+
+# EDA
+library(tidyverse)
+library(highcharter)
+
+# Shiny in md
+library(rmarkdown)
+library(shiny)
+library(shinyWidgets)
+
+afrisenti <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/afrisenti.csv')
+languages <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/languages.csv')
+language_scripts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_scripts.csv')
+language_countries <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/language_countries.csv')
+country_regions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-28/country_regions.csv')
+
+language_count = afrisenti |> 
+  count(language_iso_code, label) |> 
+  group_by(language_iso_code) |> 
+  mutate(perc = (n/sum(n))*100) |> 
+  ungroup() |> 
+  select(-n) 
+
+language_countries_comb <- language_countries |> 
+  group_by(language_iso_code) |> 
+  summarise(countrylist = paste(country, collapse = ", "),
+            countrycount = n_distinct(country)) |> 
+  ungroup()
+
+color_df <- data.frame(label = c("positive", "neutral", "negative"), colorvalue = c("#007A4D", "#FFB612", "#DE3831")) 
+
+language_perc <- language_count |> 
+  left_join(language_countries_comb) |> 
+  left_join(languages) |> 
+  left_join(color_df)
+```
+
+```{r eval=TRUE}
+#| context: server
+
+language_df <- eventReactive(
+  eventExpr = input$apply,
+  valueExpr = {
+      language_perc |> 
+      filter(countrycount >= input$country_count)
+  },
+  ignoreNULL = FALSE
+)
+
+output$language_plot <- renderHighchart({
+    language_df() |> 
+  hchart(type = "column", hcaes(x = language, y = perc, color = colorvalue))  |> 
+  hc_plotOptions(column = list(stacking = "normal")) |> 
+  hc_yAxis(max = 100, min = 0, labels = list(format = "{value}%"),
+              showFirstLabel = FALSE, title = "") |> 
+  hc_tooltip(
+    useHTML = TRUE,                              
+    formatter = JS(
+      "
+      function(){
+        outHTML = '<b>' + this.point.language + '<br>' + this.point.countrylist + '<br>' + this.point.label + '<br>' + Math.round(this.y) + '%'
+        return(outHTML)
+      }
+
+      "
+    ),
+    shape = "callout", 
+    borderWidth = 0 
+  ) |> 
+  hc_xAxis(
+    title = ""
+  )
+
+})
+```
+
+::: callout-tip
+You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2022/Week_51_Weather_forecast_accuracy). Follow me on [medium](https://medium.com/@menghani.deepsha) and [linkedIn](www.linkedin.com/in/deepshamenghani) to stay tuned for my next article.
+:::
