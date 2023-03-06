@@ -1,0 +1,4 @@
+- source: week10_numbats_australia.qmd
+  quarto-pub:
+    - id: e8c60dd2-7dba-467a-b3c4-8261bcd0c3a9
+      url: 'https://quartopub.com/sites/deepshamenghani/numbats_australia'

@@ -1,0 +1,61 @@
+---
+title: "Tidy Tuesday: Quantifying Art history data"
+date: 3/06/2023
+author:
+  - name: Deepsha Menghani 
+    url: https://github.com/deepshamenghani
+title-block-banner: true
+format:
+  html:
+    theme: flatly
+    code-fold: false
+    code-tools: true
+    toc: false
+    number-sections: true
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.height = 7
+)
+```
+
+In this post, I will analyse the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/tree/master/) Australia Numbats dataset. The data this week comes from the [Atlas of Living Australia](https://www.ala.org.au/). Thanks to Di Cook for [preparing this week's dataset](https://github.com/numbats/numbats-tidytuesday)!
+
+::: callout-tip
+You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/Week3_ArtHistory).
+:::
+
+## Load libraries
+
+```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}
+
+# For loading Tidy Tuesday data
+library(tidytuesdayR)
+
+# EDA
+library(tidyverse)
+library(DT)
+
+# Plotting
+library(camcorder)
+library(showtext)
+library(ggthemes)
+library(cowplot)
+library(magick)
+library(ggimage)
+
+```
+
+## Load data
+
+```{r}
+
+artists <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-01-17/artists.csv')
+
+```
