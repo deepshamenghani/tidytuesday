@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 In this post, I will analyse the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/tree/master/) Australia Numbats dataset. The data this week comes from the [Atlas of Living Australia](https://www.ala.org.au/). Thanks to Di Cook for [preparing this week's dataset](https://github.com/numbats/numbats-tidytuesday)!
 
 ::: callout-tip
-You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/Week3_ArtHistory).
+You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/week10_numbats_australia).
 :::
 
 ## Load libraries
@@ -43,19 +43,22 @@ library(tidyverse)
 library(DT)
 
 # Plotting
-library(camcorder)
-library(showtext)
-library(ggthemes)
-library(cowplot)
-library(magick)
-library(ggimage)
+library(highcharter)
 
 ```
 
 ## Load data
 
 ```{r}
+numbats <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-03-07/numbats.csv')
 
-artists <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-01-17/artists.csv')
+numbats %>% 
+  head()
+```
 
+
+```{r}
+
+numbats %>% 
+  count(year)
 ```
