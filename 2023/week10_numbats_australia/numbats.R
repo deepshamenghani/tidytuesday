@@ -69,7 +69,7 @@ numbat_observations <-  highchart() %>%
     data = numbats_column,
     type = "column",
     hcaes(name = name, y = n),
-    name = "Things",
+    name = "Observations",
     color = "#008080"
   ) %>%
   hc_drilldown(
