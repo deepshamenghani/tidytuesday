@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Deepsha Menghani">
+<meta name="dcterms.date" content="2023-03-06">
 
-<title>week10_numbats_australia</title>
+<title>Tidy Tuesday: Quantifying Art history data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -96,42 +98,236 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="week10_numbats_australia_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="week10_numbats_australia_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="week10_numbats_australia_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="week10_numbats_australia_files/libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<script src="week10_numbats_australia_files/libs/jquery-3.5.1/jquery.min.js"></script>
+<script src="week10_numbats_australia_files/libs/proj4js-2.3.15/proj4.js"></script>
+<link href="week10_numbats_australia_files/libs/highcharts-9.3.1/css/motion.css" rel="stylesheet">
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/highcharts.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/highcharts-3d.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/highcharts-more.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/stock.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/map.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/data.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/exporting.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/offline-exporting.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/drilldown.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/item-series.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/overlapping-datalabels.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/annotations.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/export-data.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/funnel.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/heatmap.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/treemap.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/sankey.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/dependency-wheel.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/organization.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/solid-gauge.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/streamgraph.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/sunburst.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/vector.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/wordcloud.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/xrange.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/tilemap.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/venn.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/gantt.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/timeline.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/parallel-coordinates.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/bullet.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/coloraxis.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/dumbbell.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/lollipop.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/series-label.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/plugins/motion.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/custom/reset.js"></script>
+<script src="week10_numbats_australia_files/libs/highcharts-9.3.1/modules/boost.js"></script>
+<script src="week10_numbats_australia_files/libs/highchart-binding-0.9.4/highchart.js"></script>
 
 
 </head>
 
 <body class="fullcontent">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">week10_numbats_australia</h1>
-</div>
-
-
-
-<div class="quarto-title-meta">
-
-    
-  
-    
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <div class="quarto-title-block"><div><h1 class="title">Tidy Tuesday: Quantifying Art history data</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                      </div>
   </div>
+    
   
+  <div class="quarto-title-meta">
 
-</header>
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Deepsha Menghani </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 6, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
-<section id="quarto" class="level2">
-<h2 class="anchored" data-anchor-id="quarto">Quarto</h2>
-<p>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <a href="https://quarto.org" class="uri">https://quarto.org</a>.</p>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>In this post, I will analyse the <a href="https://github.com/rfordatascience/tidytuesday/tree/master/">#TidyTuesday</a> Australia Numbats dataset. The data this week comes from the <a href="https://www.ala.org.au/">Atlas of Living Australia</a>. Thanks to Di Cook for <a href="https://github.com/numbats/numbats-tidytuesday">preparing this week’s dataset</a>!</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can find my github code repository <a href="https://github.com/deepshamenghani/tidytuesday/tree/master/2023/week10_numbats_australia">here</a>.</p>
+</div>
+</div>
+<section id="load-libraries" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="load-libraries"><span class="header-section-number">1</span> Load libraries</h2>
+<div class="cell" data-paged.print="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For loading Tidy Tuesday data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># EDA</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(highcharter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="load-data" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="load-data"><span class="header-section-number">2</span> Load data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>numbats <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-03-07/numbats.csv'</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>numbats <span class="sc">%&gt;%</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<pre><code># A tibble: 6 × 16
+  decimalLat…¹ decim…² eventDate           scien…³ taxon…⁴ recor…⁵ dataR…⁶  year
+         &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;
+1        -37.6    146. NA                  Myrmec… https:… 738306… Queen …    NA
+2        -35.1    150. 2014-06-05 02:00:00 Myrmec… https:… 13287c… ALA sp…  2014
+3        -35      118. NA                  Myrmec… https:… 1041c2… Wester…    NA
+4        -34.7    118. NA                  Myrmec… https:… c9804b… Wester…    NA
+5        -34.6    117. NA                  Myrmec… https:… bc0c87… Wester…    NA
+6        -34.6    117. NA                  Myrmec… https:… 2b917c… Wester…    NA
+# … with 8 more variables: month &lt;chr&gt;, wday &lt;chr&gt;, hour &lt;dbl&gt;, day &lt;date&gt;,
+#   dryandra &lt;lgl&gt;, prcp &lt;dbl&gt;, tmax &lt;dbl&gt;, tmin &lt;dbl&gt;, and abbreviated
+#   variable names ¹​decimalLatitude, ²​decimalLongitude, ³​scientificName,
+#   ⁴​taxonConceptID, ⁵​recordID, ⁶​dataResourceName</code></pre>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>numbats <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 26 × 2
+    year     n
+   &lt;dbl&gt; &lt;int&gt;
+ 1  1856     2
+ 2  1902     1
+ 3  1906     1
+ 4  1954     1
+ 5  1968     4
+ 6  1969     3
+ 7  1985     1
+ 8  2000     1
+ 9  2006     7
+10  2007     2
+# … with 16 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>numbats_edited <span class="ot">&lt;-</span> numbats <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(dataResourceName, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(dataResourceName, <span class="at">year =</span> <span class="fu">seq</span>(<span class="dv">2000</span>,<span class="dv">2020</span>,<span class="at">by=</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replace_na</span>(<span class="fu">list</span>(<span class="at">n=</span><span class="dv">0</span>)) </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the initial column plot data</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>numbats_column <span class="ot">&lt;-</span> numbats_edited <span class="sc">%&gt;%</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">name =</span> dataResourceName) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">drilldown =</span> <span class="fu">tolower</span>(name)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the yearly drilldown data</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>numbats_year <span class="ot">&lt;-</span> numbats_edited <span class="sc">%&gt;%</span> </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Create ids to connect layers of plot</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>idlist <span class="ot">&lt;-</span> numbats_column<span class="sc">$</span>name</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>yearlyview <span class="ot">&lt;-</span> idlist <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span> numbats_edited <span class="sc">%&gt;%</span> </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">filter</span>(dataResourceName <span class="sc">==</span> .x) <span class="sc">%&gt;%</span> <span class="fu">select</span>(year, n))</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>dflist <span class="ot">&lt;-</span> yearlyview <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">list_parse2</span>(.x))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>listall <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">list</span>(</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">tolower</span>(idlist[[.x]]),</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dflist[[.x]]</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>numbat_observations <span class="ot">&lt;-</span>   <span class="fu">highchart</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_title</span>(<span class="at">text =</span> <span class="st">"Numbat observations by Data Resource"</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>           <span class="at">style =</span> <span class="fu">list</span>(<span class="at">fontWeight =</span> <span class="st">"bold"</span>, <span class="at">fontSize =</span> <span class="st">"20px"</span>),</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>           <span class="at">align =</span> <span class="st">"center"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_subtitle</span>(<span class="at">text =</span> <span class="st">"Top 5 by count from year 2000 onward"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_caption</span>(<span class="at">text =</span> <span class="st">"Click on bar to drilldown for yearly view"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_xAxis</span>(<span class="at">type =</span> <span class="st">"category"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_legend</span>(<span class="at">enabled =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_plotOptions</span>(</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">series =</span> <span class="fu">list</span>(</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">boderWidth =</span> <span class="dv">0</span>,</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">dataLabels =</span> <span class="fu">list</span>(</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>        <span class="at">enabled =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        <span class="at">style =</span> <span class="fu">list</span>(<span class="at">fontSize =</span> <span class="dv">15</span>, <span class="at">textOutline =</span> <span class="st">"none"</span>)</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_add_series</span>(</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> numbats_column,</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"column"</span>,</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hcaes</span>(<span class="at">name =</span> name, <span class="at">y =</span> n),</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"observations"</span>,</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#008080"</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_drilldown</span>(</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">allowPointDrilldown =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">series =</span> listall</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>numbat_observations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div class="highchart html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-346998cb39dfc77f63f2" style="width:100%;height:650px;"></div>
+<script type="application/json" data-for="htmlwidget-346998cb39dfc77f63f2">{"x":{"hc_opts":{"chart":{"reflow":true},"title":{"text":"Numbat observations by Data Resource","style":{"fontWeight":"bold","fontSize":"20px"},"align":"center"},"yAxis":{"title":{"text":null}},"credits":{"enabled":false},"exporting":{"enabled":false},"boost":{"enabled":false},"plotOptions":{"series":{"label":{"enabled":false},"turboThreshold":0,"boderWidth":0,"dataLabels":{"enabled":true,"style":{"fontSize":15,"textOutline":"none"}}},"treemap":{"layoutAlgorithm":"squarified"}},"subtitle":{"text":"Top 5 by count from year 2000 onward"},"caption":{"text":"Click on bar to drilldown for yearly view"},"xAxis":{"type":"category"},"legend":{"enabled":false},"series":[{"group":"group","data":[{"name":"SA Fauna (BDBSA)","n":258,"drilldown":"sa fauna (bdbsa)","y":258},{"name":"NSW BioNet Atlas","n":198,"drilldown":"nsw bionet atlas","y":198},{"name":"iNaturalist Australia","n":67,"drilldown":"inaturalist australia","y":67},{"name":"Australian Museum provider for OZCAM","n":11,"drilldown":"australian museum provider for ozcam","y":11},{"name":"Earth Guardians Weekly Feed","n":2,"drilldown":"earth guardians weekly feed","y":2}],"type":"column","name":"observations","color":"#008080"}],"drilldown":{"allowPointDrilldown":true,"series":[{"id":"sa fauna (bdbsa)","data":[[2000,0],[2001,0],[2002,0],[2003,0],[2004,0],[2005,0],[2006,6],[2007,0],[2008,0],[2009,0],[2010,0],[2011,26],[2012,0],[2013,36],[2014,29],[2015,0],[2016,50],[2017,53],[2018,23],[2019,17],[2020,17],[2021,1]]},{"id":"nsw bionet atlas","data":[[2000,0],[2001,0],[2002,0],[2003,0],[2004,0],[2005,0],[2006,1],[2007,0],[2008,27],[2009,24],[2010,4],[2011,0],[2012,0],[2013,0],[2014,74],[2015,0],[2016,0],[2017,0],[2018,0],[2019,0],[2020,25],[2021,43]]},{"id":"inaturalist australia","data":[[2000,1],[2001,0],[2002,0],[2003,0],[2004,0],[2005,0],[2006,0],[2007,2],[2008,0],[2009,0],[2010,1],[2011,0],[2012,0],[2013,0],[2014,1],[2015,5],[2016,1],[2017,3],[2018,0],[2019,9],[2020,8],[2021,14],[2022,21],[2023,1]]},{"id":"australian museum provider for ozcam","data":[[2000,0],[2001,0],[2002,0],[2003,0],[2004,0],[2005,0],[2006,0],[2007,0],[2008,0],[2009,0],[2010,3],[2011,0],[2012,0],[2013,0],[2014,8],[2015,0],[2016,0],[2017,0],[2018,0],[2019,0],[2020,0]]},{"id":"earth guardians weekly feed","data":[[2000,0],[2001,0],[2002,0],[2003,0],[2004,0],[2005,0],[2006,0],[2007,0],[2008,0],[2009,0],[2010,0],[2011,0],[2012,0],[2013,0],[2014,0],[2015,0],[2016,0],[2017,0],[2018,0],[2019,0],[2020,0],[2021,1],[2022,1]]}]}},"theme":{"chart":{"backgroundColor":"transparent"},"colors":["#7cb5ec","#434348","#90ed7d","#f7a35c","#8085e9","#f15c80","#e4d354","#2b908f","#f45b5b","#91e8e1"]},"conf_opts":{"global":{"Date":null,"VMLRadialGradientURL":"http =//code.highcharts.com/list(version)/gfx/vml-radial-gradient.png","canvasToolsURL":"http =//code.highcharts.com/list(version)/modules/canvas-tools.js","getTimezoneOffset":null,"timezoneOffset":0,"useUTC":true},"lang":{"contextButtonTitle":"Chart context menu","decimalPoint":".","downloadCSV":"Download CSV","downloadJPEG":"Download JPEG image","downloadPDF":"Download PDF document","downloadPNG":"Download PNG image","downloadSVG":"Download SVG vector image","downloadXLS":"Download XLS","drillUpText":"◁ Back to {series.name}","exitFullscreen":"Exit from full screen","exportData":{"annotationHeader":"Annotations","categoryDatetimeHeader":"DateTime","categoryHeader":"Category"},"hideData":"Hide data table","invalidDate":null,"loading":"Loading...","months":["January","February","March","April","May","June","July","August","September","October","November","December"],"noData":"No data to display","numericSymbolMagnitude":1000,"numericSymbols":["k","M","G","T","P","E"],"printChart":"Print chart","resetZoom":"Reset zoom","resetZoomTitle":"Reset zoom level 1:1","shortMonths":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"shortWeekdays":["Sat","Sun","Mon","Tue","Wed","Thu","Fri"],"thousandsSep":" ","viewData":"View data table","viewFullscreen":"View in full screen","weekdays":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]}},"type":"chart","fonts":[],"debug":false},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<!-- -->
+
 </section>
 
 </main>
@@ -201,6 +397,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -268,7 +515,142 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Tidy Tuesday: Quantifying Art history data"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 3/06/2023</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Deepsha Menghani </span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">    url: https://github.com/deepshamenghani</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> true</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: flatly</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: false</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="an">link-citations:</span><span class="co"> yes</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">eval =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">message =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">fig.height =</span> <span class="dv">7</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>In this post, I will analyse the <span class="co">[</span><span class="ot">#TidyTuesday</span><span class="co">](https://github.com/rfordatascience/tidytuesday/tree/master/)</span> Australia Numbats dataset. The data this week comes from the <span class="co">[</span><span class="ot">Atlas of Living Australia</span><span class="co">](https://www.ala.org.au/)</span>. Thanks to Di Cook for <span class="co">[</span><span class="ot">preparing this week's dataset</span><span class="co">](https://github.com/numbats/numbats-tidytuesday)</span>!</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>You can find my github code repository <span class="co">[</span><span class="ot">here</span><span class="co">](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/week10_numbats_australia)</span>.</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load libraries</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="co"># For loading Tidy Tuesday data</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="co"># EDA</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(highcharter)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load data</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>numbats <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-03-07/numbats.csv'</span>)</span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>numbats <span class="sc">%&gt;%</span> </span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>numbats <span class="sc">%&gt;%</span> </span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year)</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>numbats_edited <span class="ot">&lt;-</span> numbats <span class="sc">%&gt;%</span> </span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(dataResourceName, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(dataResourceName, <span class="at">year =</span> <span class="fu">seq</span>(<span class="dv">2000</span>,<span class="dv">2020</span>,<span class="at">by=</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replace_na</span>(<span class="fu">list</span>(<span class="at">n=</span><span class="dv">0</span>)) </span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the initial column plot data</span></span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>numbats_column <span class="ot">&lt;-</span> numbats_edited <span class="sc">%&gt;%</span> </span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">name =</span> dataResourceName) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">drilldown =</span> <span class="fu">tolower</span>(name)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span>
+<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the yearly drilldown data</span></span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a>numbats_year <span class="ot">&lt;-</span> numbats_edited <span class="sc">%&gt;%</span> </span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() </span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Create ids to connect layers of plot</span></span>
+<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a>idlist <span class="ot">&lt;-</span> numbats_column<span class="sc">$</span>name</span>
+<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a>yearlyview <span class="ot">&lt;-</span> idlist <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span> numbats_edited <span class="sc">%&gt;%</span> </span>
+<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">filter</span>(dataResourceName <span class="sc">==</span> .x) <span class="sc">%&gt;%</span> <span class="fu">select</span>(year, n))</span>
+<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a>dflist <span class="ot">&lt;-</span> yearlyview <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">list_parse2</span>(.x))</span>
+<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a>listall <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">list</span>(</span>
+<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">tolower</span>(idlist[[.x]]),</span>
+<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dflist[[.x]]</span>
+<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a>numbat_observations <span class="ot">&lt;-</span>   <span class="fu">highchart</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_title</span>(<span class="at">text =</span> <span class="st">"Numbat observations by Data Resource"</span>,</span>
+<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a>           <span class="at">style =</span> <span class="fu">list</span>(<span class="at">fontWeight =</span> <span class="st">"bold"</span>, <span class="at">fontSize =</span> <span class="st">"20px"</span>),</span>
+<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a>           <span class="at">align =</span> <span class="st">"center"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_subtitle</span>(<span class="at">text =</span> <span class="st">"Top 5 by count from year 2000 onward"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_caption</span>(<span class="at">text =</span> <span class="st">"Click on bar to drilldown for yearly view"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_xAxis</span>(<span class="at">type =</span> <span class="st">"category"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_legend</span>(<span class="at">enabled =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_plotOptions</span>(</span>
+<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">series =</span> <span class="fu">list</span>(</span>
+<span id="cb8-116"><a href="#cb8-116" aria-hidden="true" tabindex="-1"></a>      <span class="at">boderWidth =</span> <span class="dv">0</span>,</span>
+<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a>      <span class="at">dataLabels =</span> <span class="fu">list</span>(</span>
+<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a>        <span class="at">enabled =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a>        <span class="at">style =</span> <span class="fu">list</span>(<span class="at">fontSize =</span> <span class="dv">15</span>, <span class="at">textOutline =</span> <span class="st">"none"</span>)</span>
+<span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_add_series</span>(</span>
+<span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> numbats_column,</span>
+<span id="cb8-125"><a href="#cb8-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"column"</span>,</span>
+<span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hcaes</span>(<span class="at">name =</span> name, <span class="at">y =</span> n),</span>
+<span id="cb8-127"><a href="#cb8-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"observations"</span>,</span>
+<span id="cb8-128"><a href="#cb8-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#008080"</span></span>
+<span id="cb8-129"><a href="#cb8-129" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-130"><a href="#cb8-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_drilldown</span>(</span>
+<span id="cb8-131"><a href="#cb8-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">allowPointDrilldown =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-132"><a href="#cb8-132" aria-hidden="true" tabindex="-1"></a>    <span class="at">series =</span> listall</span>
+<span id="cb8-133"><a href="#cb8-133" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb8-134"><a href="#cb8-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-135"><a href="#cb8-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-138"><a href="#cb8-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-139"><a href="#cb8-139" aria-hidden="true" tabindex="-1"></a>numbat_observations</span>
+<span id="cb8-140"><a href="#cb8-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-141"><a href="#cb8-141" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 

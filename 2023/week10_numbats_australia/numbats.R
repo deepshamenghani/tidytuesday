@@ -1,68 +1,18 @@
----
-title: "Tidy Tuesday: Quantifying Art history data"
-date: 3/06/2023
-author:
-  - name: Deepsha Menghani 
-    url: https://github.com/deepshamenghani
-title-block-banner: true
-format:
-  html:
-    theme: flatly
-    code-fold: false
-    code-tools: true
-    toc: false
-    number-sections: true
-link-citations: yes
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE,
-  eval = TRUE,
-  message = FALSE,
-  warning = FALSE,
-  fig.height = 7
-)
-```
-
-In this post, I will analyse the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/tree/master/) Australia Numbats dataset. The data this week comes from the [Atlas of Living Australia](https://www.ala.org.au/). Thanks to Di Cook for [preparing this week's dataset](https://github.com/numbats/numbats-tidytuesday)!
-
-::: callout-tip
-You can find my github code repository [here](https://github.com/deepshamenghani/tidytuesday/tree/master/2023/week10_numbats_australia).
-:::
-
-## Load libraries
-
-```{r install packages, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE, eval=TRUE, echo=TRUE}
-
 # For loading Tidy Tuesday data
 library(tidytuesdayR)
 
 # EDA
 library(tidyverse)
-library(DT)
 
 # Plotting
 library(highcharter)
+library(purrr)
 
-```
+# Read data
 
-## Load data
-
-```{r}
 numbats <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-03-07/numbats.csv')
 
-numbats %>% 
-  head()
-```
-
-
-```{r}
-
-numbats %>% 
-  count(year)
-```
-```{r}
+# Edit the data to get counts for plotting
 numbats_edited <- numbats %>% 
   filter(year >= 2000) %>% 
   count(dataResourceName, year) %>% 
@@ -98,8 +48,8 @@ listall <- c(1:5) %>% map(~ list(
   data = dflist[[.x]]
 ))
 
-numbat_observations <-   highchart() %>%
-  hc_title(text = "Numbat observations by Data Resource",
+numbat_observations <-  highchart() %>%
+  hc_title(text = "Numbat observations by Data Resources",
            style = list(fontWeight = "bold", fontSize = "20px"),
            align = "center") %>% 
   hc_subtitle(text = "Top 5 by count from year 2000 onward") %>% 
@@ -119,17 +69,12 @@ numbat_observations <-   highchart() %>%
     data = numbats_column,
     type = "column",
     hcaes(name = name, y = n),
-    name = "observations",
+    name = "Things",
     color = "#008080"
-  ) %>% 
+  ) %>%
   hc_drilldown(
     allowPointDrilldown = TRUE,
     series = listall
   ) 
-```
 
-```{r}
-numbat_observations
-```
-
-
+htmlwidgets::saveWidget(numbat_observations,"numbat_drilldown.html", selfcontained = TRUE)
