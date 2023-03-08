@@ -5,4 +5,4 @@ The data this week comes from the [Atlas of Living Australia](https://www.ala.or
 ### Highcharter drill down plot
 
 
-![numbats_obs_gif](https://user-images.githubusercontent.com/46545400/223544953-b402e5da-df96-4366-9a2b-9af261862350.gif)
+![numbats_obs_gif](https://user-images.githubusercontent.com/46545400/223753886-c4ab3e27-ca6d-4093-b1aa-abd7910020f3.gif)
