@@ -49,7 +49,7 @@ listall <- c(1:5) %>% map(~ list(
 ))
 
 numbat_observations <-  highchart() %>%
-  hc_title(text = "Numbat observations by Data Resources",
+  hc_title(text = "Numbat observations by Data Resource",
            style = list(fontWeight = "bold", fontSize = "20px"),
            align = "center") %>% 
   hc_subtitle(text = "Top 5 by count from year 2000 onward") %>% 
